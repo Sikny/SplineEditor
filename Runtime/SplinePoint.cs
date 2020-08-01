@@ -28,11 +28,13 @@ namespace SplineEditor.Runtime {
             spline.points.Remove(this);
         }
 
+        private readonly Color _gizmoColor = Color.grey;
+        private readonly Color _activeGizmoColor = Color.red;
         private void OnDrawGizmos() {
             if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(spline.transform))
                 return;
             
-            Gizmos.color = Selection.activeGameObject == gameObject ? Color.red : Color.gray;
+            Gizmos.color = Selection.activeGameObject == gameObject ? _activeGizmoColor : _gizmoColor;
             float pointSize = SplineUtils.SplinePointSize;
             var position = transform.position;
             Gizmos.DrawCube(position, Vector3.one * pointSize);
