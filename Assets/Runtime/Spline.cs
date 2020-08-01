@@ -31,16 +31,16 @@ namespace SplineEditor.Runtime {
                 points[points.Count - 1].isLast = false;
         }
         
+        private Color _bezierCurveColor = Color.white;
         private void OnDrawGizmos() {
             if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(transform)) return;
             
             int pointCount = points.Count;
-            Gizmos.color = Color.white;
             for (int i = 0; i < pointCount; ++i) {
                 if (i < pointCount - 1) {
                     Handles.DrawBezier(points[i].transform.position, 
                         points[i+1].transform.position, points[i].controlPoint1.position, 
-                        points[i].controlPoint2.position, Color.white, null, 2f);
+                        points[i].controlPoint2.position, _bezierCurveColor, null, 2f);
                 }
             }
         }
