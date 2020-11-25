@@ -4,8 +4,8 @@ using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Editor {
-    [CustomPropertyDrawer(typeof(SplinePoint))]
-    public class SplinePointPropertyDrawer : PropertyDrawer {
+    [CustomPropertyDrawer(typeof(BezierPoint))]
+    public class BezierPointPropertyDrawer : PropertyDrawer {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
@@ -20,19 +20,19 @@ namespace SplineEditor.Editor {
             var ctrl2LblRect = new Rect(position.x, position.y + 22f, labelWidth, position.height);
             var ctrl2Rect = new Rect(position.x + labelWidth, position.y + 44f, position.width - labelWidth, position.height);
             
-            SplinePoint splinePoint = (SplinePoint) property.objectReferenceValue;
-            if(splinePoint == null)
+            BezierPoint bezierPoint = (BezierPoint) property.objectReferenceValue;
+            if(bezierPoint == null)
                 EditorGUI.LabelField(vectorRect, "Null Reference");
             else {
-                splinePoint.transform.localPosition =
-                    EditorGUI.Vector3Field(vectorRect, GUIContent.none, splinePoint.transform.localPosition);
+                bezierPoint.transform.localPosition =
+                    EditorGUI.Vector3Field(vectorRect, GUIContent.none, bezierPoint.transform.localPosition);
                 
                 EditorGUI.LabelField(ctrl1LblRect, "Control point 1");
-                splinePoint.controlPoint1.localPosition =
-                    EditorGUI.Vector3Field(ctrl1Rect, GUIContent.none, splinePoint.controlPoint1.localPosition);
+                bezierPoint.controlPoint1.localPosition =
+                    EditorGUI.Vector3Field(ctrl1Rect, GUIContent.none, bezierPoint.controlPoint1.localPosition);
                 EditorGUI.LabelField(ctrl2LblRect, "Control point 2");
-                splinePoint.controlPoint2.localPosition =
-                    EditorGUI.Vector3Field(ctrl2Rect, GUIContent.none, splinePoint.controlPoint2.localPosition);
+                bezierPoint.controlPoint2.localPosition =
+                    EditorGUI.Vector3Field(ctrl2Rect, GUIContent.none, bezierPoint.controlPoint2.localPosition);
             }
             EditorGUI.EndProperty();
         }
