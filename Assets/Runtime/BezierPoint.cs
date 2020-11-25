@@ -4,8 +4,8 @@ using UnityEngine;
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
     [ExecuteInEditMode]
-    public class SplinePoint : MonoBehaviour {
-        [HideInInspector] public Spline spline;
+    public class BezierPoint : MonoBehaviour {
+        [HideInInspector] public BezierCurve bezierCurve;
         public Transform controlPoint1;
         public Transform controlPoint2;
 
@@ -15,27 +15,27 @@ namespace SplineEditor.Runtime {
             // Adding control points
             Transform selfTransform = transform;
             GameObject cPObj1 = new GameObject("Control Point 1");
-            cPObj1.AddComponent<ControlPoint>().splinePoint = this;
+            cPObj1.AddComponent<ControlPoint>().bezierPoint = this;
             controlPoint1 = cPObj1.transform;
             controlPoint1.parent = selfTransform;
             GameObject cPObj2 = new GameObject("Control Point 2");
-            cPObj2.AddComponent<ControlPoint>().splinePoint = this;
+            cPObj2.AddComponent<ControlPoint>().bezierPoint = this;
             controlPoint2 = cPObj2.transform;
             controlPoint2.parent = selfTransform;
         }
 
         private void OnDestroy() {
-            spline.points.Remove(this);
+            bezierCurve.points.Remove(this);
         }
 
         private readonly Color _gizmoColor = Color.grey;
         private readonly Color _activeGizmoColor = Color.red;
         private void OnDrawGizmos() {
-            if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(spline.transform))
+            if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(bezierCurve.transform))
                 return;
             
             Gizmos.color = Selection.activeGameObject == gameObject ? _activeGizmoColor : _gizmoColor;
-            float pointSize = SplineUtils.SplinePointSize;
+            float pointSize = BezierUtils.SplinePointSize;
             var position = transform.position;
             Gizmos.DrawCube(position, Vector3.one * pointSize);
             
@@ -44,7 +44,7 @@ namespace SplineEditor.Runtime {
                 var ctrlPos2 = controlPoint2.position;
                 Handles.DrawDottedLine(position, ctrlPos1, 4.0f);
                 Handles.DrawDottedLine(ctrlPos1, ctrlPos2, 4.0f);
-                SplinePoint nextPoint = spline.points[spline.points.IndexOf(this) + 1];
+                BezierPoint nextPoint = bezierCurve.points[bezierCurve.points.IndexOf(this) + 1];
                 Handles.DrawDottedLine(ctrlPos2, nextPoint.transform.position, 4.0f);
             }
         }

@@ -4,18 +4,18 @@ using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
-    public class Spline : MonoBehaviour {
-        public List<SplinePoint> points = new List<SplinePoint>();
+    public class BezierCurve : MonoBehaviour {
+        public List<BezierPoint> points = new List<BezierPoint>();
 
         public void AddPoint() {
             GameObject splinePointObject = new GameObject("SplinePoint");
             splinePointObject.transform.parent = transform;
-            SplinePoint splinePoint = splinePointObject.AddComponent<SplinePoint>();
-            splinePoint.spline = this;
-            splinePoint.Init();
-            splinePoint.isLast = true;
+            BezierPoint bezierPoint = splinePointObject.AddComponent<BezierPoint>();
+            bezierPoint.bezierCurve = this;
+            bezierPoint.Init();
+            bezierPoint.isLast = true;
             UpdateLast();
-            points.Add(splinePoint);
+            points.Add(bezierPoint);
         }
 
         public void RemovePoint(int index) {

@@ -4,15 +4,15 @@ using UnityEngine;
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
     public class ControlPoint : MonoBehaviour {
-        [HideInInspector] public SplinePoint splinePoint;
+        [HideInInspector] public BezierPoint bezierPoint;
 
         private readonly Color _gizmoColor = Color.white;
         private void OnDrawGizmos() {
-            if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(splinePoint.transform)
-                || splinePoint.isLast) return;
+            if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(bezierPoint.transform)
+                || bezierPoint.isLast) return;
             
             Gizmos.color = _gizmoColor;
-            Gizmos.DrawSphere(transform.position, SplineUtils.ControlPointSize);
+            Gizmos.DrawSphere(transform.position, BezierUtils.ControlPointSize);
         }
     }
 }
