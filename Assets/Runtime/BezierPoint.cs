@@ -31,19 +31,18 @@ namespace SplineEditor.Runtime {
         private readonly Color _gizmoColor = Color.grey;
         private readonly Color _activeGizmoColor = Color.red;
         private void OnDrawGizmos() {
-            if (Selection.activeTransform is null || !Selection.activeTransform.IsChildOf(bezierCurve.transform))
-                return;
-            
             Gizmos.color = Selection.activeGameObject == gameObject ? _activeGizmoColor : _gizmoColor;
             float pointSize = BezierUtils.SplinePointSize;
             var position = transform.position;
             Gizmos.DrawCube(position, Vector3.one * pointSize);
+
+            if (Selection.activeTransform is null) return;
             
             if (!isLast && Selection.activeTransform.IsChildOf(transform)) {
                 var ctrlPos1 = controlPoint1.position;
                 var ctrlPos2 = controlPoint2.position;
                 Handles.DrawDottedLine(position, ctrlPos1, 4.0f);
-                Handles.DrawDottedLine(ctrlPos1, ctrlPos2, 4.0f);
+                //Handles.DrawDottedLine(ctrlPos1, ctrlPos2, 4.0f);
                 BezierPoint nextPoint = bezierCurve.points[bezierCurve.points.IndexOf(this) + 1];
                 Handles.DrawDottedLine(ctrlPos2, nextPoint.transform.position, 4.0f);
             }
