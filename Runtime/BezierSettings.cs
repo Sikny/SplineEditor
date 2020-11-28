@@ -4,9 +4,10 @@
 namespace SplineEditor.Runtime {
     [CreateAssetMenu(fileName = "BezierSettings", menuName = "ScriptableObjects/BezierSettings")]
     public class BezierSettings : ScriptableObject {
-        public Color bezierCurveColor;
-        public Color bezierPointColor;
-        public Color bezierControlPointColor;
-        public Color tangentLinesColor;
+        public Color bezierCurveColor = Color.red;
+        public float bezierCurveWidth = 2f;
+        public Color bezierPointColor = Color.gray;
+        public Color bezierControlPointColor = Color.gray;
+        public Color tangentLinesColor = Color.white;
     }
 }
