@@ -14,30 +14,32 @@ namespace SplineEditor.Editor {
                 Debug.LogError("Possible NullReferenceException on BezierCurve");
                 return;
             }
-            
+            var bezierPosition = be.transform.position;
+
             Handles.color = be.settings.tangentLinesColor;
-            Handles.DrawDottedLine(be.startPoint, be.startTangent, 2);
-            Handles.DrawDottedLine(be.endPoint, be.endTangent, 2);
+            Handles.DrawDottedLine(be.startPoint + bezierPosition, be.startTangent + bezierPosition, 2);
+            Handles.DrawDottedLine(be.endPoint + bezierPosition, be.endTangent + bezierPosition, 2);
             
             Handles.color = be.settings.bezierPointColor;
-            if (Handles.Button(be.startPoint, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
+            if (Handles.Button(be.startPoint + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
                 _selectedPoint = 0;
             }
-            if (Handles.Button(be.endPoint, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
+            if (Handles.Button(be.endPoint + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
                 _selectedPoint = 1;
             }
             Handles.color = be.settings.bezierControlPointColor;
-            if (Handles.Button(be.startTangent, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
+            if (Handles.Button(be.startTangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
                 _selectedPoint = 2;
             }
-            if (Handles.Button(be.endTangent, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
+            if (Handles.Button(be.endTangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
                 _selectedPoint = 3;
             }
             
             var position = GetSelectedPoint(be);
             if (position.HasValue) {
                 EditorGUI.BeginChangeCheck();
-                var newPos = Handles.PositionHandle(position.Value, Quaternion.identity);
+                var newPos = Handles.PositionHandle(position.Value + bezierPosition, Quaternion.identity)
+                             - bezierPosition;
 
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(target, "Changed Bezier point");
