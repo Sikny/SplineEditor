@@ -1,46 +1,22 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
     public class BezierCurve : MonoBehaviour {
-        public List<BezierPoint> points = new List<BezierPoint>();
+        public BezierSettings settings;
+        public Vector3 startPoint = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 endPoint = new Vector3(-2.0f, 2.0f, 0.0f);
+        public Vector3 startTangent = new Vector3(-0.5f, 0.5f, 0.0f);
+        public Vector3 endTangent = new Vector3(-1.5f, 1.5f, 0.0f);
 
-        public void AddPoint() {
-            GameObject splinePointObject = new GameObject("SplinePoint");
-            splinePointObject.transform.parent = transform;
-            BezierPoint bezierPoint = splinePointObject.AddComponent<BezierPoint>();
-            bezierPoint.bezierCurve = this;
-            bezierPoint.Init();
-            bezierPoint.isLast = true;
-            UpdateLast();
-            points.Add(bezierPoint);
-        }
 
-        public void RemovePoint(int index) {
-            if (points[index] != null) {
-                if (Application.isPlaying) Destroy(points[index].gameObject);
-                else DestroyImmediate(points[index].gameObject);
-            }
-            UpdateLast();
-        }
-
-        public void UpdateLast() {
-            if(points.Count > 0)
-                points[points.Count - 1].isLast = false;
-        }
-        
-        private Color _bezierCurveColor = Color.white;
+        #if UNITY_EDITOR
         private void OnDrawGizmos() {
-            int pointCount = points.Count;
-            for (int i = 0; i < pointCount; ++i) {
-                if (i < pointCount - 1) {
-                    Handles.DrawBezier(points[i].transform.position, 
-                        points[i+1].transform.position, points[i].controlPoint1.position, 
-                        points[i].controlPoint2.position, _bezierCurveColor, null, 2f);
-                }
-            }
+            Handles.DrawBezier(startPoint, endPoint, startTangent, endTangent, settings.bezierCurveColor, null, 2f);
         }
+        #endif
     }
 }
