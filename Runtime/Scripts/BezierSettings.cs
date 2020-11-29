@@ -9,5 +9,9 @@ namespace SplineEditor.Runtime {
         public Color bezierPointColor = Color.gray;
         public Color bezierControlPointColor = Color.gray;
         public Color tangentLinesColor = Color.white;
+        public bool showNormals;
+        public Color normalsColor = Color.yellow;
+        public bool showVerticalNormals;
+        public Color verticalNormalsColor = Color.blue;
     }
 }
