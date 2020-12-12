@@ -6,14 +6,14 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public static class BezierUtils
     {
-        internal class VectorFrame {
+        public class VectorFrame {
             public Vector3 Origin { get; }
 
             public Vector3 Tangent { get; }
 
-            public Vector3 RotationAxis { get; private set; }
+            public Vector3 RotationAxis { get; set; }
 
-            public Vector3 Normal { get; private set; }
+            public Vector3 Normal { get; set; }
 
             public VectorFrame(Vector3 origin, Vector3 tangent, Vector3 rotAxis, Vector3 normal) {
                 Origin = origin;
@@ -21,43 +21,44 @@ namespace SplineEditor.Runtime {
                 RotationAxis = rotAxis;
                 Normal = normal;
             }
-            
-            public static List<VectorFrame> GenerateRotationMinimisingFrames(BezierCurve be, int steps) {
-                var frames = new List<VectorFrame>();
-                float step = 1.0f / steps;
-                float t0, t1, c1, c2;
-                Vector3 v1, v2, riL, tiL;
-                VectorFrame x0, x1;
-                
-                frames.Add(be.GetFrenetFrame(0));
-                for (t0 = 0; t0 < 1.0f; t0 += step) {
-                    // start with previous frame
-                    x0 = frames[frames.Count - 1];
-                    
-                    // get the next frame -> throw away its axis and normal
-                    t1 = t0 + step;
-                    x1 = be.GetFrenetFrame(t1);
-                    
-                    // we reflect x0 tangent & axis onto x1, through the plane of reflection at the point between x0, x1
-                    v1 = x1.Origin - x0.Origin;
-                    c1 = v1.sqrMagnitude;    // square magnitude ?
-                    riL = x0.RotationAxis - v1 * 2 / c1 * Vector3.Dot(v1, x0.RotationAxis);
-                    tiL = x0.Tangent - v1 * 2 / c1 * Vector3.Dot(v1, x0.Tangent);
-                    
-                    // 2nd time reflection, over a plane at x1 so that the frame is aligned with the curve tangent
-                    v2 = x1.Tangent - tiL;
-                    c2 = v2.sqrMagnitude;
-                    x1.RotationAxis = riL - v2 * 2 / c2 * Vector3.Dot(v2, riL);
-                    x1.Normal = Vector3.Cross(x1.RotationAxis, x1.Tangent);
-                    frames.Add(x1);
-                }
-
-                frames.RemoveAt(frames.Count - 1);
-
-                return frames;
-            }
         }
 
+        public static List<VectorFrame> GenerateRotationMinimisingFrames(this BezierCurve be) {
+            int steps = be.divisions;
+            var frames = new List<VectorFrame>();
+            float step = 1.0f / steps;
+            float t0, t1, c1, c2;
+            Vector3 v1, v2, riL, tiL;
+            VectorFrame x0, x1;
+                
+            frames.Add(be.GetFrenetFrame(0));
+            for (t0 = 0; t0 < 1.0f; t0 += step) {
+                // start with previous frame
+                x0 = frames[frames.Count - 1];
+                    
+                // get the next frame -> throw away its axis and normal
+                t1 = t0 + step;
+                x1 = be.GetFrenetFrame(t1);
+                    
+                // we reflect x0 tangent & axis onto x1, through the plane of reflection at the point between x0, x1
+                v1 = x1.Origin - x0.Origin;
+                c1 = v1.sqrMagnitude;    // square magnitude ?
+                riL = x0.RotationAxis - v1 * 2 / c1 * Vector3.Dot(v1, x0.RotationAxis);
+                tiL = x0.Tangent - v1 * 2 / c1 * Vector3.Dot(v1, x0.Tangent);
+                    
+                // 2nd time reflection, over a plane at x1 so that the frame is aligned with the curve tangent
+                v2 = x1.Tangent - tiL;
+                c2 = v2.sqrMagnitude;
+                x1.RotationAxis = riL - v2 * 2 / c2 * Vector3.Dot(v2, riL);
+                x1.Normal = Vector3.Cross(x1.RotationAxis, x1.Tangent);
+                frames.Add(x1);
+            }
+
+            frames.RemoveAt(frames.Count - 1);
+
+            return frames;
+        }
+        
         private static VectorFrame GetFrenetFrame(this BezierCurve be, float t) {
             return new VectorFrame(be.GetBezierPos(t), be.Tangent(t).normalized, be.RotationAxis(t).normalized, be.Normal(t).normalized);
         }

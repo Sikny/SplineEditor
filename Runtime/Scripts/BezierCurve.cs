@@ -31,8 +31,7 @@ namespace SplineEditor.Runtime {
             _tangents.Clear();
             _normals.Clear();
             _rotAxis.Clear();
-            List<BezierUtils.VectorFrame> vectorFrames =
-                BezierUtils.VectorFrame.GenerateRotationMinimisingFrames(this, divisions);
+            List<BezierUtils.VectorFrame> vectorFrames = this.GenerateRotationMinimisingFrames();
             int arrayLen = vectorFrames.Count;
             for (int i = 0; i < arrayLen; ++i) {
                 _positions.Add(transform.position + vectorFrames[i].Origin);
