@@ -311,32 +311,32 @@ PrefabInstance:
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: endPoint.y
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: endTangent.x
-      value: -2.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: endTangent.z
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: endTangent.y
-      value: -0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: startTangent.x
-      value: -0.5
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837278, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: startTangent.z
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2774165489944837279, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
