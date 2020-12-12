@@ -52,6 +52,8 @@ namespace SplineEditor.Runtime {
                     frames.Add(x1);
                 }
 
+                frames.RemoveAt(frames.Count - 1);
+
                 return frames;
             }
         }
