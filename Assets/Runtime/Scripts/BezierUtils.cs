@@ -9,7 +9,7 @@ namespace SplineEditor.Runtime {
         public class VectorFrame {
             public Vector3 Origin { get; }
 
-            public Vector3 Tangent { get; }
+            public Vector3 Tangent { get; set; }
 
             public Vector3 RotationAxis { get; set; }
 
@@ -30,7 +30,7 @@ namespace SplineEditor.Runtime {
             float t0, t1, c1, c2;
             Vector3 v1, v2, riL, tiL;
             VectorFrame x0, x1;
-                
+
             frames.Add(be.GetFrenetFrame(0));
             for (t0 = 0; t0 < 1.0f; t0 += step) {
                 // start with previous frame
@@ -69,7 +69,7 @@ namespace SplineEditor.Runtime {
         }
 
         private static Vector3 GetBezierPos(this BezierCurve be, float t) {
-            return ComputeBezier(t, be.startPoint, be.startTangent, be.endTangent, be.endPoint);
+            return ComputeBezier(t, be.startPoint.position, be.startPoint.tangent, be.endPoint.tangent, be.endPoint.position);
         }
         
         private static float ComputeBezierDerivative (float t, float a, float b, float c, float d) {
@@ -80,15 +80,15 @@ namespace SplineEditor.Runtime {
         }
 
         private static Vector3 Tangent(this BezierCurve be, float t) {
-            float x = ComputeBezierDerivative(t, be.startPoint.x, be.startTangent.x, be.endTangent.x, be.endPoint.x);
-            float y = ComputeBezierDerivative(t, be.startPoint.y, be.startTangent.y, be.endTangent.y, be.endPoint.y);
-            float z = ComputeBezierDerivative(t, be.startPoint.z, be.startTangent.z, be.endTangent.z, be.endPoint.z);
+            float x = ComputeBezierDerivative(t, be.startPoint.position.x, be.startPoint.tangent.x, be.endPoint.tangent.x, be.endPoint.position.x);
+            float y = ComputeBezierDerivative(t, be.startPoint.position.y, be.startPoint.tangent.y, be.endPoint.tangent.y, be.endPoint.position.y);
+            float z = ComputeBezierDerivative(t, be.startPoint.position.z, be.startPoint.tangent.z, be.endPoint.tangent.z, be.endPoint.position.z);
             return new Vector3(x, y, z).normalized;
         }
 
         private static Vector3 ComputeBezierDoubleDerivative(BezierCurve be, float t) {
-            return 6 * (1 - t) * (be.endTangent - 2 * be.startTangent + be.startPoint) +
-                   6 * t * (be.endPoint - 2 * be.endTangent + be.startTangent);
+            return 6 * (1 - t) * (be.endPoint.tangent - 2 * be.startPoint.tangent + be.startPoint.position) +
+                   6 * t * (be.endPoint.position - 2 * be.endPoint.tangent + be.startPoint.tangent);
         }
 
         private static Vector3 Normal(this BezierCurve be, float t) {
