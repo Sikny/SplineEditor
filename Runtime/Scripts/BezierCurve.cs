@@ -8,15 +8,12 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public class BezierCurve : MonoBehaviour {
         public BezierSettings settings;
-        public Vector3 startPoint = new Vector3(0.0f, 0.0f, 0.0f);
-        public Vector3 endPoint = new Vector3(-2.0f, 2.0f, 0.0f);
-        public Vector3 startTangent = new Vector3(-0.5f, 0.5f, 0.0f);
-        public Vector3 endTangent = new Vector3(-1.5f, 1.5f, 0.0f);
+        public BezierControlPoint startPoint;
+        public BezierControlPoint endPoint;
 
         public int divisions = 10;
 
         private readonly List<Vector3> _positions = new List<Vector3>();
-        private readonly List<Vector3> _tangents = new List<Vector3>();
         private readonly List<Vector3> _normals = new List<Vector3>();
         private readonly List<Vector3> _rotAxis = new List<Vector3>();
 
@@ -28,14 +25,12 @@ namespace SplineEditor.Runtime {
 
         public void RecalculatePositions() {
             _positions.Clear();
-            _tangents.Clear();
             _normals.Clear();
             _rotAxis.Clear();
             List<BezierUtils.VectorFrame> vectorFrames = this.GenerateRotationMinimisingFrames();
             int arrayLen = vectorFrames.Count;
             for (int i = 0; i < arrayLen; ++i) {
                 _positions.Add(transform.position + vectorFrames[i].Origin);
-                _tangents.Add(vectorFrames[i].Tangent);
                 _normals.Add(vectorFrames[i].Normal);
                 _rotAxis.Add(vectorFrames[i].RotationAxis);
             }

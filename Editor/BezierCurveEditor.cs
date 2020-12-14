@@ -17,21 +17,21 @@ namespace SplineEditor.Editor {
             var bezierPosition = be.transform.position;
 
             Handles.color = be.settings.tangentLinesColor;
-            Handles.DrawDottedLine(be.startPoint + bezierPosition, be.startTangent + bezierPosition, 2);
-            Handles.DrawDottedLine(be.endPoint + bezierPosition, be.endTangent + bezierPosition, 2);
+            Handles.DrawDottedLine(be.startPoint.position + bezierPosition, be.startPoint.tangent + bezierPosition, 2);
+            Handles.DrawDottedLine(be.endPoint.position + bezierPosition, be.endPoint.tangent + bezierPosition, 2);
             
             Handles.color = be.settings.bezierPointColor;
-            if (Handles.Button(be.startPoint + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
+            if (Handles.Button(be.startPoint.position + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
                 _selectedPoint = 0;
             }
-            if (Handles.Button(be.endPoint + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
+            if (Handles.Button(be.endPoint.position + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.CubeHandleCap)) {
                 _selectedPoint = 1;
             }
             Handles.color = be.settings.bezierControlPointColor;
-            if (Handles.Button(be.startTangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
+            if (Handles.Button(be.startPoint.tangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
                 _selectedPoint = 2;
             }
-            if (Handles.Button(be.endTangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
+            if (Handles.Button(be.endPoint.tangent + bezierPosition, Quaternion.identity, 0.1f, 0.1f, Handles.SphereHandleCap)) {
                 _selectedPoint = 3;
             }
             
@@ -57,13 +57,13 @@ namespace SplineEditor.Editor {
         private Vector3? GetSelectedPoint(BezierCurve be) {
             switch (_selectedPoint) {
                 case 0:
-                    return be.startPoint;
+                    return be.startPoint.position;
                 case 1:
-                    return be.endPoint;
+                    return be.endPoint.position;
                 case 2:
-                    return be.startTangent;
+                    return be.startPoint.tangent;
                 case 3:
-                    return be.endTangent;
+                    return be.endPoint.tangent;
                 default:
                     return null;
             }
@@ -72,16 +72,16 @@ namespace SplineEditor.Editor {
         private void SetSelectedPoint(BezierCurve be, Vector3 position) {
             switch (_selectedPoint) {
                 case 0:
-                    be.startPoint = position;
+                    be.startPoint.position = position;
                     break;
                 case 1:
-                    be.endPoint = position;
+                    be.endPoint.position = position;
                     break;
                 case 2:
-                    be.startTangent = position;
+                    be.startPoint.tangent = position;
                     break;
                 case 3:
-                    be.endTangent = position;
+                    be.endPoint.tangent = position;
                     break;
             }
         }
