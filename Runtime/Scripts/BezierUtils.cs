@@ -25,14 +25,18 @@ namespace SplineEditor.Runtime {
 
         public static List<VectorFrame> GenerateRotationMinimisingFrames(this BezierCurve be) {
             List<VectorFrame> frames = new List<VectorFrame>();
-            for (int i = 0; i < be.controlPoints.Count - 1; ++i) {
-                frames.AddRange(GenerateRotationMinimisingFrames(be.controlPoints[i], 
-                    be.controlPoints[i+1], be.divisions));
+            for (int i = 0; i < be.controlPoints.Count - 1; ++i)
+            {
+                VectorFrame firstFrame = null;
+                if (i > 0)
+                    firstFrame = GetFrenetFrame(be.controlPoints[i - 1], be.controlPoints[i], 1);
+                frames.AddRange(GenerateRotationMinimisingFrames(be.controlPoints[i],
+                    be.controlPoints[i+1], be.divisions, firstFrame));
             }
             return frames;
         }
         
-        public static List<VectorFrame> GenerateRotationMinimisingFrames(BezierControlPoint startPoint, BezierControlPoint endPoint, int divisions) {
+        public static List<VectorFrame> GenerateRotationMinimisingFrames(BezierControlPoint startPoint, BezierControlPoint endPoint, int divisions, VectorFrame firstFrame = null) {
             int steps = divisions;
             var frames = new List<VectorFrame>();
             float step = 1.0f / steps;
@@ -40,7 +44,10 @@ namespace SplineEditor.Runtime {
             Vector3 v1, v2, riL, tiL;
             VectorFrame x0, x1;
 
-            frames.Add(GetFrenetFrame(startPoint, endPoint, 0));
+            if(firstFrame != null)
+                frames.Add(firstFrame);
+            else
+                frames.Add(GetFrenetFrame(startPoint, endPoint, 0));
             for (t0 = 0; t0 < 1.0f; t0 += step) {
                 // start with previous frame
                 x0 = frames[frames.Count - 1];
