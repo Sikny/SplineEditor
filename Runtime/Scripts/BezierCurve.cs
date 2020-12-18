@@ -3,6 +3,8 @@ using UnityEditor;
 #endif
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
@@ -11,13 +13,15 @@ namespace SplineEditor.Runtime {
 
         public List<BezierControlPoint> controlPoints;
 
-        public int divisions = 10;
+        public int divisionsBetweenTwoPoints = 10;
 
         private readonly List<Vector3> _positions = new List<Vector3>();
         private readonly List<Vector3> _normals = new List<Vector3>();
         private readonly List<Vector3> _rotAxis = new List<Vector3>();
 
         [HideInInspector] public Vector3 lastPosition;
+
+        public UnityEvent onBezierChanged;
 
         private void OnValidate() {
             RecalculatePositions();

@@ -54,7 +54,7 @@ namespace SplineEditor.Editor {
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(target, "Changed Bezier point");
                     SetSelectedPoint(be, newPos);
-                    be.RecalculatePositions();
+                    be.onBezierChanged.Invoke();
                 }
             }
 

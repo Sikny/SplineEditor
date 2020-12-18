@@ -31,7 +31,7 @@ namespace SplineEditor.Runtime {
                 if (i > 0)
                     firstFrame = GetFrenetFrame(be.controlPoints[i - 1], be.controlPoints[i], 1);
                 frames.AddRange(GenerateRotationMinimisingFrames(be.controlPoints[i],
-                    be.controlPoints[i+1], be.divisions, firstFrame));
+                    be.controlPoints[i+1], be.divisionsBetweenTwoPoints, firstFrame));
             }
             return frames;
         }
