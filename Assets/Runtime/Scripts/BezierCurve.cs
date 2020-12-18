@@ -8,8 +8,8 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public class BezierCurve : MonoBehaviour {
         public BezierSettings settings;
-        public BezierControlPoint startPoint;
-        public BezierControlPoint endPoint;
+
+        public List<BezierControlPoint> controlPoints;
 
         public int divisions = 10;
 
