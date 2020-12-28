@@ -117,7 +117,18 @@ namespace SplineEditor.Runtime {
         private static Vector3 RotationAxis(BezierControlPoint startPoint, BezierControlPoint endPoint, float t) {
             Vector3 a = Tangent(startPoint, endPoint, t);
             Vector3 b = (a + ComputeBezierDoubleDerivative(startPoint, endPoint, t)).normalized;
-            return Vector3.Cross(b, a).normalized;
+            var result =  Vector3.Cross(b, a).normalized;
+            if (result == Vector3.zero) result = Vector3.up;
+            return result;
+        }
+
+        public static Vector3 GetClosestPoint(this BezierCurve be, Vector3 position) {
+            // f(t) = 0.5 * Vector3.Dot(p(t)-X,p(t)-X)
+            // Minimization can be achieved by finding all of the roots of the derivative
+            // f'(t)=dot(p'(t), p(t)-X)
+            // inside the interval and comparing the function values of the roots and at
+            // the end points of the interval
+            return Vector3.zero;
         }
     }
 }
