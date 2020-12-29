@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 2774165489944837279}
   - component: {fileID: 2774165489944837278}
   m_Layer: 0
-  m_Name: BezierCurve
+  m_Name: BezierSpline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecba9e7c6c0b2b54580f71b7ef1638a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bezierCurve: {fileID: 2774165489944837278}
+  bezierSpline: {fileID: 2774165489944837278}
   bezierMeshExtrusion: {fileID: 8408940842296652524}
 --- !u!1 &6568958202024352420
 GameObject:
@@ -226,6 +226,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 76239912389573836}
-  bezierCurve: {fileID: 2774165489944837278}
+  bezierSpline: {fileID: 2774165489944837278}
   roadWidth: 0.5
   roadThickness: 0.1

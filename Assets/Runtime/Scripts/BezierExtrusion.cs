@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
     public class BezierExtrusion : MonoBehaviour {
-        public BezierCurve bezierCurve;
+        public BezierSpline bezierSpline;
         
         public void Init() {
             

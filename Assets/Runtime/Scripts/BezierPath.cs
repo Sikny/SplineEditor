@@ -6,19 +6,19 @@ namespace SplineEditor.Runtime
     [ExecuteInEditMode]
     public class BezierPath : MonoBehaviour
     {
-        public BezierCurve bezierCurve;
+        public BezierSpline bezierSpline;
         public BezierMeshExtrusion bezierMeshExtrusion;
 
         private void OnValidate()
         {
-            if (bezierCurve == null || bezierMeshExtrusion == null) return;
-            bezierMeshExtrusion.bezierCurve = bezierCurve;
+            if (bezierSpline == null || bezierMeshExtrusion == null) return;
+            bezierMeshExtrusion.bezierSpline = bezierSpline;
         }
 
         #if UNITY_EDITOR
         public void Update() {
             if (Application.isPlaying) return;
-            bezierCurve.transform.localPosition = Vector3.zero;
+            bezierSpline.transform.localPosition = Vector3.zero;
             bezierMeshExtrusion.transform.localPosition = -transform.position / 2;
             bezierMeshExtrusion.UpdateMesh();
         }

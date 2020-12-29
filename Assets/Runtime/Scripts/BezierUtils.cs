@@ -23,7 +23,7 @@ namespace SplineEditor.Runtime {
             }
         }
 
-        public static List<VectorFrame> GenerateRotationMinimisingFrames(this BezierCurve be) {
+        public static List<VectorFrame> GenerateRotationMinimisingFrames(this BezierSpline be) {
             List<VectorFrame> frames = new List<VectorFrame>();
             for (int i = 0; i < be.controlPoints.Count - 1; ++i)
             {
@@ -122,7 +122,7 @@ namespace SplineEditor.Runtime {
             return result;
         }
 
-        public static Vector3 GetClosestPoint(this BezierCurve be, Vector3 position) {
+        public static Vector3 GetClosestPoint(this BezierSpline be, Vector3 position) {
             // f(t) = 0.5 * Vector3.Dot(p(t)-X,p(t)-X)
             // Minimization can be achieved by finding all of the roots of the derivative
             // f'(t)=dot(p'(t), p(t)-X)
