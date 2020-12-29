@@ -94,8 +94,8 @@ namespace SplineEditor.Editor {
             var position = GetSelectedPoint(be);
             if (position.HasValue) {
                 EditorGUI.BeginChangeCheck();
-                var newPos = Handles.PositionHandle(bezierTransform.TransformPoint(position.Value),
-                    Quaternion.identity) - bezierTransform.position;
+                var newPos = bezierTransform.InverseTransformPoint(Handles.PositionHandle(bezierTransform.TransformPoint(position.Value),
+                    Quaternion.identity));
 
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(target, "Changed Bezier point");
@@ -105,12 +105,14 @@ namespace SplineEditor.Editor {
         }
 
         private Vector3? GetSelectedPoint(BezierCurve be) {
+            Vector3? result;
             if (_selectedPoint > be.controlPoints.Count - 1) _selectedPoint = 0;
             if (_selectedTangent == 1)
-                return be.controlPoints[_selectedPoint].Tangent1;
-            if (_selectedTangent == 2)
-                return be.controlPoints[_selectedPoint].Tangent2;
-            return be.controlPoints[_selectedPoint].position;
+                result = be.controlPoints[_selectedPoint].Tangent1;
+            else if (_selectedTangent == 2)
+                result = be.controlPoints[_selectedPoint].Tangent2;
+            else result = be.controlPoints[_selectedPoint].position;
+            return result;
         }
 
         private void SetSelectedPoint(BezierCurve be, Vector3 position) {
