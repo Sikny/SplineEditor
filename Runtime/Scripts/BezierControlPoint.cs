@@ -30,5 +30,13 @@ namespace SplineEditor.Runtime {
                 tangent1 = -val;
             }
         }
+
+        public BezierControlPoint Copy() {
+            BezierControlPoint result = new BezierControlPoint();
+            result.position = position;
+            result.tangent1 = tangent1;
+            result.tangent2 = tangent2;
+            return result;
+        }
     }
 }

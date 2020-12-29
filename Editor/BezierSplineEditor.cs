@@ -12,18 +12,38 @@ namespace SplineEditor.Editor {
 
         private UnityEditor.Editor _editor;
 
+        private bool _showSettings;
+        private bool _showControlPoints;
+
         public override void OnInspectorGUI() {
-            var settingsProperty = serializedObject.FindProperty("settings");
-            CreateCachedEditor(settingsProperty.objectReferenceValue, null, ref _editor);
-            if (_editor != null)
-                _editor.OnInspectorGUI();
-            DrawDefaultInspector();
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("settings"), GUIContent.none);
+            _showSettings = EditorGUILayout.Foldout(_showSettings, "Settings");
+            if (_showSettings) {
+                CreateCachedEditor(serializedObject.FindProperty("settings").objectReferenceValue, null, ref _editor);
+                if (_editor != null)
+                    _editor.OnInspectorGUI();
+            }
+            _showControlPoints = EditorGUILayout.Foldout(_showControlPoints, "Control Points");
+            if (_showControlPoints) {
+                EditorGUI.indentLevel += 1;
+                var controlPoints = serializedObject.FindProperty("controlPoints");
+                var arraySize = controlPoints.arraySize;
+                for (int i = 0; i < arraySize; ++i) {
+                    EditorGUILayout.PropertyField(controlPoints.GetArrayElementAtIndex(i));
+                }
+                EditorGUI.indentLevel -= 1;
+            }
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("divisionsBetweenTwoPoints"));
+            serializedObject.ApplyModifiedProperties();
+            //DrawDefaultInspector();
         }
 
         private void OnSceneGUI() {
             BezierSpline be = target as BezierSpline;
             if (be == null) {
-                Debug.LogError("Possible NullReferenceException on BezierCurve");
+                Debug.LogError("Possible NullReferenceException on BezierSpline");
                 return;
             }
 
@@ -31,7 +51,7 @@ namespace SplineEditor.Editor {
                 Debug.LogError("Missing required Bezier Settings attribute");
                 return;
             }
-            
+
             var bezierTransform = be.transform;
 
             Handles.color = be.settings.bezierCurveColor;
@@ -58,7 +78,7 @@ namespace SplineEditor.Editor {
                 if (i < be.controlPoints.Count - 1)
                     Handles.DrawBezier(currentPos,
                         bezierTransform.TransformPoint(be.controlPoints[i + 1].position),
-                        currentTan2, 
+                        currentTan2,
                         bezierTransform.TransformPoint(be.controlPoints[i + 1].Tangent1),
                         be.settings.bezierCurveColor, null, be.settings.bezierCurveWidth);
                 Handles.color = be.settings.tangentLinesColor;
@@ -68,7 +88,7 @@ namespace SplineEditor.Editor {
                 Handles.color = be.settings.bezierPointColor;
                 var handleSize = HandleUtility.GetHandleSize(currentPos) * be.settings.controlsHandleSize;
                 var handlePos = currentPos;
-                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize,
                     handleSize, Handles.CubeHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 0;
@@ -77,14 +97,15 @@ namespace SplineEditor.Editor {
                 Handles.color = be.settings.bezierControlPointColor;
                 handleSize = HandleUtility.GetHandleSize(currentTan1) * be.settings.controlsHandleSize;
                 handlePos = currentTan1;
-                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize,
                     handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 1;
                 }
+
                 handleSize = HandleUtility.GetHandleSize(currentTan2) * be.settings.controlsHandleSize;
                 handlePos = currentTan2;
-                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize,
                     handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 2;
@@ -94,7 +115,8 @@ namespace SplineEditor.Editor {
             var position = GetSelectedPoint(be);
             if (position.HasValue) {
                 EditorGUI.BeginChangeCheck();
-                var newPos = bezierTransform.InverseTransformPoint(Handles.PositionHandle(bezierTransform.TransformPoint(position.Value),
+                var newPos = bezierTransform.InverseTransformPoint(Handles.PositionHandle(
+                    bezierTransform.TransformPoint(position.Value),
                     Quaternion.identity));
 
                 if (EditorGUI.EndChangeCheck()) {
