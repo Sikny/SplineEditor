@@ -1,4 +1,5 @@
-﻿using SplineEditor.Runtime;
+﻿using System.Collections.Generic;
+using SplineEditor.Runtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,12 +16,37 @@ namespace SplineEditor.Editor {
                 Debug.LogError("Possible NullReferenceException on BezierCurve");
                 return;
             }
-            var bezierPosition = be.transform.position;
+
+            var bezierTransform = be.transform;
+            var bezierPosition = bezierTransform.position;
+
+            Handles.color = be.settings.bezierCurveColor;
+            
+            List<BezierUtils.VectorFrame> vectorFrames = be.GenerateRotationMinimisingFrames();
+            int arrayLen = vectorFrames.Count;
+            for (int i = 0; i < arrayLen; ++i) {
+                var origin = bezierTransform.TransformPoint(vectorFrames[i].Origin);
+                if (be.settings.showNormals) {
+                    Handles.color = be.settings.normalsColor;
+                    Handles.DrawLine(origin, origin + vectorFrames[i].Normal);
+                }
+
+                if (be.settings.showVerticalNormals) {
+                    Handles.color = be.settings.verticalNormalsColor;
+                    Handles.DrawLine(origin, origin + vectorFrames[i].RotationAxis);
+                }
+            }
 
             for (int i = 0; i < be.controlPoints.Count; ++i) {
                 Vector3 currentPos = be.controlPoints[i].position;
                 Vector3 currentTan1 = be.controlPoints[i].Tangent1;
                 Vector3 currentTan2 = be.controlPoints[i].Tangent2;
+                if (i < be.controlPoints.Count - 1)
+                    Handles.DrawBezier(bezierTransform.TransformPoint(currentPos),
+                        bezierTransform.TransformPoint(be.controlPoints[i + 1].position),
+                        bezierTransform.TransformPoint(currentTan2),
+                        bezierTransform.TransformPoint(be.controlPoints[i+1].Tangent1), 
+                        be.settings.bezierCurveColor, null, be.settings.bezierCurveWidth);
                 Handles.color = be.settings.tangentLinesColor;
                 Handles.DrawLine(currentPos + bezierPosition, currentTan1 + bezierPosition);
                 Handles.DrawLine(currentPos + bezierPosition, currentTan2 + bezierPosition);
@@ -54,13 +80,7 @@ namespace SplineEditor.Editor {
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(target, "Changed Bezier point");
                     SetSelectedPoint(be, newPos);
-                    be.onBezierChanged.Invoke();
                 }
-            }
-
-            if (be.lastPosition != be.transform.position) {
-                be.lastPosition = be.transform.position;
-                be.RecalculatePositions();
             }
         }
 

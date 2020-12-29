@@ -15,12 +15,13 @@ namespace SplineEditor.Runtime
             bezierMeshExtrusion.bezierCurve = bezierCurve;
         }
 
-        public void Update()
-        {
-            bezierCurve.RecalculatePositions();
+        #if UNITY_EDITOR
+        public void Update() {
+            if (Application.isPlaying) return;
             bezierCurve.transform.localPosition = Vector3.zero;
             bezierMeshExtrusion.transform.localPosition = -transform.position / 2;
             bezierMeshExtrusion.UpdateMesh();
         }
+        #endif
     }
 }
