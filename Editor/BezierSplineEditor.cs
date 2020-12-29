@@ -36,6 +36,12 @@ namespace SplineEditor.Editor {
                 EditorGUI.indentLevel -= 1;
             }
             EditorGUILayout.PropertyField(serializedObject.FindProperty("divisionsBetweenTwoPoints"));
+            if (GUILayout.Button("Add Curve")) {
+                var be = target as BezierSpline;
+                // ReSharper disable once PossibleNullReferenceException
+                be.AddCurve();
+                Undo.RecordObject(be, "Add Curve");
+            }
             serializedObject.ApplyModifiedProperties();
             //DrawDefaultInspector();
         }
