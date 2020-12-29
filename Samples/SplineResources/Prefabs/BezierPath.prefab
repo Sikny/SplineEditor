@@ -134,20 +134,6 @@ MonoBehaviour:
     tangent1: {x: 1, y: -0, z: -0}
     tangent2: {x: -1, y: 0, z: 0}
   divisionsBetweenTwoPoints: 50
-  onBezierChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6782662702495946385}
-        m_MethodName: DoUpdate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
 --- !u!1 &2774165490298130653
 GameObject:
   m_ObjectHideFlags: 0
