@@ -33,7 +33,6 @@ namespace SplineEditor.Editor {
             }
             
             var bezierTransform = be.transform;
-            var bezierPosition = bezierTransform.position;
 
             Handles.color = be.settings.bezierCurveColor;
 
@@ -53,36 +52,39 @@ namespace SplineEditor.Editor {
             }
 
             for (int i = 0; i < be.controlPoints.Count; ++i) {
-                Vector3 currentPos = be.controlPoints[i].position;
-                Vector3 currentTan1 = be.controlPoints[i].Tangent1;
-                Vector3 currentTan2 = be.controlPoints[i].Tangent2;
+                Vector3 currentPos = bezierTransform.TransformPoint(be.controlPoints[i].position);
+                Vector3 currentTan1 = bezierTransform.TransformPoint(be.controlPoints[i].Tangent1);
+                Vector3 currentTan2 = bezierTransform.TransformPoint(be.controlPoints[i].Tangent2);
                 if (i < be.controlPoints.Count - 1)
-                    Handles.DrawBezier(bezierTransform.TransformPoint(currentPos),
+                    Handles.DrawBezier(currentPos,
                         bezierTransform.TransformPoint(be.controlPoints[i + 1].position),
-                        bezierTransform.TransformPoint(currentTan2),
+                        currentTan2, 
                         bezierTransform.TransformPoint(be.controlPoints[i + 1].Tangent1),
                         be.settings.bezierCurveColor, null, be.settings.bezierCurveWidth);
                 Handles.color = be.settings.tangentLinesColor;
-                Handles.DrawLine(currentPos + bezierPosition, currentTan1 + bezierPosition);
-                Handles.DrawLine(currentPos + bezierPosition, currentTan2 + bezierPosition);
+                Handles.DrawLine(currentPos, currentTan1);
+                Handles.DrawLine(currentPos, currentTan2);
 
                 Handles.color = be.settings.bezierPointColor;
-                var handleSize = HandleUtility.GetHandleSize(currentPos + bezierPosition) * be.settings.controlsHandleSize;
-                if (Handles.Button(currentPos + bezierPosition, Quaternion.identity, handleSize, 
+                var handleSize = HandleUtility.GetHandleSize(currentPos) * be.settings.controlsHandleSize;
+                var handlePos = currentPos;
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
                     handleSize, Handles.CubeHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 0;
                 }
 
                 Handles.color = be.settings.bezierControlPointColor;
-                handleSize = HandleUtility.GetHandleSize(currentTan1 + bezierPosition) * be.settings.controlsHandleSize;
-                if (Handles.Button(currentTan1 + bezierPosition, Quaternion.identity, handleSize, 
+                handleSize = HandleUtility.GetHandleSize(currentTan1) * be.settings.controlsHandleSize;
+                handlePos = currentTan1;
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
                     handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 1;
                 }
-                handleSize = HandleUtility.GetHandleSize(currentTan2 + bezierPosition) * be.settings.controlsHandleSize;
-                if (Handles.Button(currentTan2 + bezierPosition, Quaternion.identity, handleSize, 
+                handleSize = HandleUtility.GetHandleSize(currentTan2) * be.settings.controlsHandleSize;
+                handlePos = currentTan2;
+                if (Handles.Button(handlePos, Quaternion.identity, handleSize, 
                     handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 2;
@@ -92,8 +94,8 @@ namespace SplineEditor.Editor {
             var position = GetSelectedPoint(be);
             if (position.HasValue) {
                 EditorGUI.BeginChangeCheck();
-                var newPos = Handles.PositionHandle(position.Value + bezierPosition, Quaternion.identity) -
-                             bezierPosition;
+                var newPos = Handles.PositionHandle(bezierTransform.TransformPoint(position.Value),
+                    Quaternion.identity) - bezierTransform.position;
 
                 if (EditorGUI.EndChangeCheck()) {
                     Undo.RecordObject(target, "Changed Bezier point");
