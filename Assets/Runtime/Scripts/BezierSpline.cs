@@ -9,5 +9,11 @@ namespace SplineEditor.Runtime {
         public List<BezierControlPoint> controlPoints;
 
         public int divisionsBetweenTwoPoints = 10;
+
+        public void AddCurve() {
+            BezierControlPoint newPoint = controlPoints[controlPoints.Count - 1].Copy();
+            newPoint.position += newPoint.Tangent2.normalized * 2;
+            controlPoints.Add(newPoint);
+        }
     }
 }
