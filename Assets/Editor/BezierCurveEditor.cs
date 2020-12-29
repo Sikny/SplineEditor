@@ -67,21 +67,23 @@ namespace SplineEditor.Editor {
                 Handles.DrawLine(currentPos + bezierPosition, currentTan2 + bezierPosition);
 
                 Handles.color = be.settings.bezierPointColor;
-                if (Handles.Button(currentPos + bezierPosition, Quaternion.identity, 0.1f, 0.1f,
-                    Handles.CubeHandleCap)) {
+                var handleSize = HandleUtility.GetHandleSize(currentPos + bezierPosition) * be.settings.controlsHandleSize;
+                if (Handles.Button(currentPos + bezierPosition, Quaternion.identity, handleSize, 
+                    handleSize, Handles.CubeHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 0;
                 }
 
                 Handles.color = be.settings.bezierControlPointColor;
-                if (Handles.Button(currentTan1 + bezierPosition, Quaternion.identity, 0.1f, 0.1f,
-                    Handles.SphereHandleCap)) {
+                handleSize = HandleUtility.GetHandleSize(currentTan1 + bezierPosition) * be.settings.controlsHandleSize;
+                if (Handles.Button(currentTan1 + bezierPosition, Quaternion.identity, handleSize, 
+                    handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 1;
                 }
-
-                if (Handles.Button(currentTan2 + bezierPosition, Quaternion.identity, 0.1f, 0.1f,
-                    Handles.SphereHandleCap)) {
+                handleSize = HandleUtility.GetHandleSize(currentTan2 + bezierPosition) * be.settings.controlsHandleSize;
+                if (Handles.Button(currentTan2 + bezierPosition, Quaternion.identity, handleSize, 
+                    handleSize, Handles.SphereHandleCap)) {
                     _selectedPoint = i;
                     _selectedTangent = 2;
                 }

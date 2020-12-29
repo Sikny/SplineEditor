@@ -35,8 +35,8 @@ namespace SplineEditor.Runtime {
             }
             return frames;
         }
-        
-        public static List<VectorFrame> GenerateRotationMinimisingFrames(BezierControlPoint startPoint, BezierControlPoint endPoint, int divisions, VectorFrame firstFrame = null) {
+
+        private static List<VectorFrame> GenerateRotationMinimisingFrames(BezierControlPoint startPoint, BezierControlPoint endPoint, int divisions, VectorFrame firstFrame = null) {
             int steps = divisions;
             var frames = new List<VectorFrame>();
             float step = 1.0f / steps;
