@@ -5,8 +5,8 @@ using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Editor {
-    [CustomEditor(typeof(BezierCurve))]
-    public class BezierCurveEditor : UnityEditor.Editor {
+    [CustomEditor(typeof(BezierSpline))]
+    public class BezierSplineEditor : UnityEditor.Editor {
         private int _selectedPoint; // 0, 1 -> start/end point; 2, 3 -> start/end tangent
         private int _selectedTangent;
 
@@ -21,7 +21,7 @@ namespace SplineEditor.Editor {
         }
 
         private void OnSceneGUI() {
-            BezierCurve be = target as BezierCurve;
+            BezierSpline be = target as BezierSpline;
             if (be == null) {
                 Debug.LogError("Possible NullReferenceException on BezierCurve");
                 return;
@@ -104,7 +104,7 @@ namespace SplineEditor.Editor {
             }
         }
 
-        private Vector3? GetSelectedPoint(BezierCurve be) {
+        private Vector3? GetSelectedPoint(BezierSpline be) {
             Vector3? result;
             if (_selectedPoint > be.controlPoints.Count - 1) _selectedPoint = 0;
             if (_selectedTangent == 1)
@@ -115,7 +115,7 @@ namespace SplineEditor.Editor {
             return result;
         }
 
-        private void SetSelectedPoint(BezierCurve be, Vector3 position) {
+        private void SetSelectedPoint(BezierSpline be, Vector3 position) {
             if (_selectedTangent == 1)
                 be.controlPoints[_selectedPoint].Tangent1 = position;
             else if (_selectedTangent == 2)

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public class BezierMeshExtrusion : MonoBehaviour {
         public MeshFilter meshFilter;
-        public BezierCurve bezierCurve;
+        public BezierSpline bezierSpline;
 
         public float roadWidth = 1;
         public float roadThickness = 1;
@@ -14,7 +14,7 @@ namespace SplineEditor.Runtime {
         public void UpdateMesh() {
             Mesh mesh = new Mesh();
             
-            List<BezierUtils.VectorFrame> vectorFrames = bezierCurve.GenerateRotationMinimisingFrames();
+            List<BezierUtils.VectorFrame> vectorFrames = bezierSpline.GenerateRotationMinimisingFrames();
             int arrayLen = vectorFrames.Count;
             
             var vertices = new Vector3[arrayLen * 2 * 4 + 8];    // 2 vertices per bezier vertex * (2 faces + 2 sides) + 2 extremities 
