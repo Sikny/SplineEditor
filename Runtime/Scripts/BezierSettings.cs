@@ -8,6 +8,7 @@ namespace SplineEditor.Runtime {
         public float bezierCurveWidth = 2f;
         public Color bezierPointColor = Color.gray;
         public Color bezierControlPointColor = Color.gray;
+        public float controlsHandleSize = 0.1f;
         public Color tangentLinesColor = Color.white;
         public bool showNormals;
         public Color normalsColor = Color.yellow;
