@@ -9,6 +9,7 @@ namespace SplineEditor.Runtime {
         public Vector3 position;
         [SerializeField] private Vector3 tangent1;
         [SerializeField] private Vector3 tangent2;
+        public float roll;
 
         public Vector3 Tangent1
         {
