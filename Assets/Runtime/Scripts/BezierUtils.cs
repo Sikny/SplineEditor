@@ -9,7 +9,7 @@ namespace SplineEditor.Runtime {
         public class VectorFrame {
             public Vector3 Origin { get; }
 
-            public Vector3 Tangent { get; set; }
+            public Vector3 Tangent { get; }
 
             public Vector3 RotationAxis { get; set; }
 
@@ -122,13 +122,49 @@ namespace SplineEditor.Runtime {
             return result;
         }
 
+        private static Vector3 GetClosestPointRecursive(Vector3 position, BezierControlPoint controlPointBegin, 
+            BezierControlPoint controlPointEnd, float t0, float t1, float step, float precision) {
+            float newStep = step /= 2;
+            float minDistance = float.MaxValue;
+            float newT0 = t0, newT1 = t1;
+
+            for (float t = t0; t <= t1; t += newStep) {
+                float distance = Vector3.Distance(position, GetBezierPos(controlPointBegin, controlPointEnd, t));
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    newT0 = t;
+                    newT1 = t + newStep;
+                }
+            }
+            if(newStep <= precision)
+                return GetBezierPos(controlPointBegin, controlPointEnd, newT0);
+            return GetClosestPointRecursive(position, controlPointBegin, controlPointEnd, newT0, newT1, newStep,
+                precision);
+        }
+
         public static Vector3 GetClosestPoint(this BezierSpline be, Vector3 position) {
             // f(t) = 0.5 * Vector3.Dot(p(t)-X,p(t)-X)
             // Minimization can be achieved by finding all of the roots of the derivative
             // f'(t)=dot(p'(t), p(t)-X)
             // inside the interval and comparing the function values of the roots and at
             // the end points of the interval
-            return Vector3.zero;
+
+            // 1. find extremities control points of position
+            // 2. search closest point between interval and recursively reduce interval and step
+            // return result when step <= wanted precision (dichotomy like research)
+
+            float minDistance = float.MaxValue;
+            int indexControlPointEnd = be.controlPoints.Count;
+            for (int i = be.controlPoints.Count - 1; i > 0; --i) {
+                float distance = Vector3.Distance(be.transform.TransformPoint(be.controlPoints[i].position), position);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    indexControlPointEnd = i;
+                }
+            }
+
+            return GetClosestPointRecursive(position, be.controlPoints[indexControlPointEnd-1], 
+                be.controlPoints[indexControlPointEnd], 0, 1, 0.1f, 0.01f);
         }
     }
 }
