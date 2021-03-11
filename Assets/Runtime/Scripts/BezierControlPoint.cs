@@ -1,43 +1,23 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 // ReSharper disable once CheckNamespace
-namespace SplineEditor.Runtime {
-    [Serializable]
-    public class BezierControlPoint
+namespace SplineEditor.Runtime
+{
+    public class BezierControlPoint : MonoBehaviour
     {
-        public Vector3 position;
-        [SerializeField] private Vector3 tangent1;
-        [SerializeField] private Vector3 tangent2;
-        public float roll;
-
-        public Vector3 Tangent1
+        public BezierSettings bezierSettings;
+        private void OnDrawGizmos()
         {
-            get => tangent1 + position;
-            set
-            {
-                var val = value - position;
-                tangent1 = val;
-                tangent2 = -val;
-            }
+            Gizmos.color = bezierSettings.bezierControlPointColor;
+            float gizmoSize = bezierSettings.controlsHandleSize / 2;
+            Gizmos.DrawSphere(transform.position, gizmoSize);
         }
 
-        public Vector3 Tangent2
+        private void OnDrawGizmosSelected()
         {
-            get => tangent2 + position;
-            set {
-                var val = value - position;
-                tangent2 = val;
-                tangent1 = -val;
-            }
-        }
-
-        public BezierControlPoint Copy() {
-            BezierControlPoint result = new BezierControlPoint();
-            result.position = position;
-            result.tangent1 = tangent1;
-            result.tangent2 = tangent2;
-            return result;
+            if (transform.parent == null) return;
+            BezierNode node = GetComponentInParent<BezierNode>();
+            node.UpdateMirrorPos(transform);
         }
     }
 }
