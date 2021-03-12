@@ -289,7 +289,7 @@ PrefabInstance:
     - target: {fileID: 2809489491619853140, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2809489491619853140, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
         type: 3}
@@ -304,7 +304,12 @@ PrefabInstance:
     - target: {fileID: 2953132080200256764, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.002
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2953132080200256764, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2953132080200256764, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
         type: 3}
@@ -330,6 +335,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5325507121439333778, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
+        type: 3}
+      propertyPath: roll
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9, type: 3}
@@ -435,6 +445,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2953132080200256764, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
         type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2953132080200256764, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
+        type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
       objectReference: {fileID: 0}
@@ -457,6 +472,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5325507121439333778, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9,
+        type: 3}
+      propertyPath: roll
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9a3e2ac0edd29e4ea99d2b5a5b21cc9, type: 3}

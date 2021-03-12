@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+
 // ReSharper disable TooWideLocalVariableScope
 
 // ReSharper disable once CheckNamespace
@@ -27,50 +28,30 @@ namespace SplineEditor.Runtime {
             List<VectorFrame> frames = new List<VectorFrame>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
-                VectorFrame firstFrame = null;
-                if (i > 0)
-                    firstFrame = GetFrenetFrame(be.bezierNodes[i - 1], be.bezierNodes[i], 1);
                 frames.AddRange(GenerateRotationMinimisingFrames(be.bezierNodes[i],
-                    be.bezierNodes[i+1], be.divisionsBetweenTwoPoints, firstFrame));
+                    be.bezierNodes[i+1], be.divisionsBetweenTwoPoints));
             }
             return frames;
         }
 
-        private static List<VectorFrame> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint, int divisions, VectorFrame firstFrame = null) {
+        private static List<VectorFrame> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint, int divisions) {
             int steps = divisions;
             var frames = new List<VectorFrame>();
             float step = 1.0f / steps;
-            float t0, t1, c1, c2;
-            Vector3 v1, v2, riL, tiL;
-            VectorFrame x0, x1;
+            float t;
+            VectorFrame x;
+            
+            Quaternion startRotation = startPoint.transform.rotation * Quaternion.Euler(0,0,startPoint.roll);
+            Quaternion endRotation = endPoint.transform.rotation * Quaternion.Euler(0,0,endPoint.roll);
 
-            if(firstFrame != null)
-                frames.Add(firstFrame);
-            else
-                frames.Add(GetFrenetFrame(startPoint, endPoint, 0));
-            for (t0 = 0; t0 < 1.0f; t0 += step) {
-                // start with previous frame
-                x0 = frames[frames.Count - 1];
-                    
-                // get the next frame -> throw away its axis and normal
-                t1 = t0 + step;
-                x1 = GetFrenetFrame(startPoint, endPoint, t1);
-                    
-                // we reflect x0 tangent & axis onto x1, through the plane of reflection at the point between x0, x1
-                v1 = x1.Origin - x0.Origin;
-                c1 = v1.sqrMagnitude;    // square magnitude ?
-                riL = x0.RotationAxis - v1 * 2 / c1 * Vector3.Dot(v1, x0.RotationAxis);
-                tiL = x0.Tangent - v1 * 2 / c1 * Vector3.Dot(v1, x0.Tangent);
-                    
-                // 2nd time reflection, over a plane at x1 so that the frame is aligned with the curve tangent
-                v2 = x1.Tangent - tiL;
-                c2 = v2.sqrMagnitude;
-                x1.RotationAxis = riL - v2 * 2 / c2 * Vector3.Dot(v2, riL);
-                x1.Normal = Vector3.Cross(x1.RotationAxis, x1.Tangent);
-                frames.Add(x1);
+            for (t = 0; t < 1.0f; t += step) {
+                x = GetFrenetFrame(startPoint, endPoint, t);
+                
+                Quaternion rotation = Quaternion.Lerp(startRotation, endRotation, t); 
+                x.Normal = rotation * Vector3.right;
+                x.RotationAxis = rotation * Vector3.up;
+                frames.Add(x);
             }
-
-            frames.RemoveAt(frames.Count - 1);
 
             return frames;
         }
