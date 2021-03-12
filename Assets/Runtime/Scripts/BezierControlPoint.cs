@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime
@@ -13,11 +14,13 @@ namespace SplineEditor.Runtime
             Gizmos.DrawSphere(transform.position, gizmoSize);
         }
 
+        #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            if (transform.parent == null) return;
+            if (Selection.activeObject != gameObject || transform.parent == null) return;
             BezierNode node = GetComponentInParent<BezierNode>();
             node.UpdateMirrorPos(transform);
         }
+        #endif
     }
 }

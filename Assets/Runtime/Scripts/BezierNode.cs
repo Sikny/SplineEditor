@@ -27,11 +27,22 @@ namespace SplineEditor.Runtime
             set => tangentEnd.position = value;
         }
 
+        public void UpdateMirrorPos(Transform controlPoint)
+        {
+            var target = controlPoint == tangentStart ? tangentEnd : tangentStart;
+
+            Vector3 tPos = transform.position;
+            Vector3 direction = controlPoint.position - tPos;
+            target.position = tPos - direction;
+        }
+
         private void OnDrawGizmos()
         {
             if (settings == null) return;
-            
-            Vector3 pos = transform.position;
+
+            Transform t = transform;
+            Vector3 pos = t.position;
+            Quaternion rot = t.rotation;
 
             Gizmos.color = settings.tangentLinesColor;
             Gizmos.DrawLine(tangentStart.position, pos);
@@ -40,18 +51,17 @@ namespace SplineEditor.Runtime
             Gizmos.color = settings.bezierPointColor;
             var gizmoSize = settings.controlsHandleSize;
             Gizmos.DrawCube(pos, gizmoSize * Vector3.one);
-        }
+            
+            if (!(rot.eulerAngles == Vector3.zero && rot.w == 0)) 
+                Gizmos.matrix = Matrix4x4.TRS(pos, Quaternion.Normalize(rot), t.lossyScale);
 
-        public void UpdateMirrorPos(Transform controlPoint)
-        {
-            Transform target;
-            if (controlPoint == tangentStart)
-            {
-                target = tangentEnd;
-            }
-            else target = tangentStart;
-
-            target.position = transform.position - controlPoint.localPosition;
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube( new Vector3(0, 2.5f, 0) * gizmoSize, new Vector3(0.1f, 5, 0.1f) * gizmoSize);
+            #if UNITY_EDITOR
+            Handles.matrix = Gizmos.matrix;
+            Handles.color = Color.white;
+            Handles.DrawWireDisc(Vector3.zero, Vector3.forward, 5 * gizmoSize);
+            #endif
         }
     }
 }
