@@ -5,7 +5,6 @@ namespace SplineEditor.Runtime {
     [CreateAssetMenu(fileName = "BezierSettings", menuName = "ScriptableObjects/BezierSettings")]
     public class BezierSettings : ScriptableObject {
         public Color bezierCurveColor = Color.red;
-        public float bezierCurveWidth = 2f;
         public Color bezierPointColor = Color.gray;
         public Color bezierControlPointColor = Color.gray;
         public float controlsHandleSize = 0.1f;

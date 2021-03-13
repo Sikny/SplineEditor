@@ -18,8 +18,16 @@ namespace SplineEditor.Runtime
         #if UNITY_EDITOR
         public void Update() {
             if (Application.isPlaying) return;
-            bezierSpline.transform.localPosition = Vector3.zero;
-            bezierMeshExtrusion.transform.localPosition = -transform.position / 2;
+
+            Transform t = transform;
+            t.rotation = Quaternion.identity;
+            t.localScale = Vector3.one;
+
+            Transform splineT = bezierSpline.transform; 
+            splineT.localPosition = Vector3.zero;
+
+
+            bezierMeshExtrusion.transform.localPosition = Vector3.zero;
             bezierMeshExtrusion.UpdateMesh();
         }
         #endif

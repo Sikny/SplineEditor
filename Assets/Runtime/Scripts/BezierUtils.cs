@@ -8,7 +8,7 @@ namespace SplineEditor.Runtime {
     public static class BezierUtils
     {
         public class VectorFrame {
-            public Vector3 Origin { get; }
+            public Vector3 Origin { get; set;  }
 
             public Vector3 Tangent { get; }
 
@@ -28,8 +28,13 @@ namespace SplineEditor.Runtime {
             List<VectorFrame> frames = new List<VectorFrame>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
-                frames.AddRange(GenerateRotationMinimisingFrames(be.bezierNodes[i],
-                    be.bezierNodes[i+1], be.divisionsBetweenTwoPoints));
+                var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
+                    be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
+                foreach (var vFrame in vFrames)
+                {
+                    vFrame.Origin = be.transform.InverseTransformPoint(vFrame.Origin);
+                    frames.Add(vFrame);
+                }
             }
             return frames;
         }
