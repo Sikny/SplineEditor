@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &73999320
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1045,7 +1045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b5dff349ce508441a085e5245d44cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!43 &1580895776
+--- !u!43 &1936564382
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1219,7 +1219,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1580895776}
+      objectReference: {fileID: 1936564382}
     - target: {fileID: 1736153076928642843, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1264,6 +1264,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BezierPath
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774165490298130653, guid: ae8113d816cc3a34fa88f11bf640610a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2774165490298130654, guid: ae8113d816cc3a34fa88f11bf640610a,
         type: 3}
