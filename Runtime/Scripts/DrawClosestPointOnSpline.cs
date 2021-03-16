@@ -9,7 +9,7 @@ namespace SplineEditor.Runtime {
             if (spline == null) return;
             Vector3 position = transform.position;
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(spline.GetClosestPoint(position), 0.1f);
+            Gizmos.DrawSphere(spline.GetClosestPoint(position).Origin, 0.1f);
         }
     }
 }

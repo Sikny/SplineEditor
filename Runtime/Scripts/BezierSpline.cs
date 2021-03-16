@@ -21,7 +21,7 @@ namespace SplineEditor.Runtime
 
         private void OnDrawGizmos()
         {
-            List<BezierUtils.VectorFrame> vectorFrames = this.GenerateRotationMinimisingFrames();
+            List<BezierUtils.BezierPos> vectorFrames = this.GenerateRotationMinimisingFrames();
             int arrayLen = vectorFrames.Count;
             for (int i = 0; i < arrayLen; ++i)
             {
@@ -42,7 +42,7 @@ namespace SplineEditor.Runtime
                 if (settings.showVerticalNormals)
                 {
                     Gizmos.color = settings.verticalNormalsColor;
-                    Gizmos.DrawLine(origin, origin + vectorFrames[i].RotationAxis);
+                    Gizmos.DrawLine(origin, origin + vectorFrames[i].LocalUp);
                 }
             }
         }

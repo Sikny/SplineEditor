@@ -14,7 +14,7 @@ namespace SplineEditor.Runtime {
         public void UpdateMesh() {
             Mesh mesh = new Mesh();
             
-            List<BezierUtils.VectorFrame> vectorFrames = bezierSpline.GenerateRotationMinimisingFrames();
+            List<BezierUtils.BezierPos> vectorFrames = bezierSpline.GenerateRotationMinimisingFrames();
             int arrayLen = vectorFrames.Count;
             
             var vertices = new Vector3[arrayLen * 2 * 4 + 8];    // 2 vertices per bezier vertex * (2 faces + 2 sides) + 2 extremities 
@@ -32,7 +32,7 @@ namespace SplineEditor.Runtime {
             for (int i = 0; i < arrayLen; ++i) {
                 var bezierCenter = vectorFrames[i].Origin;
                 var normal = vectorFrames[i].Normal;
-                var rotAxis = vectorFrames[i].RotationAxis;
+                var rotAxis = vectorFrames[i].LocalUp;
                 
                 // up face
                 vertices[indexUp] = bezierCenter + normal * roadWidth;
