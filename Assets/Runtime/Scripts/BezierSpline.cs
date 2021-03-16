@@ -25,12 +25,12 @@ namespace SplineEditor.Runtime
             int arrayLen = vectorFrames.Count;
             for (int i = 0; i < arrayLen; ++i)
             {
-                var origin = transform.TransformPoint(vectorFrames[i].Origin);
+                var origin = vectorFrames[i].GlobalOrigin;
 
                 if (i < vectorFrames.Count - 1)
                 {
                     Gizmos.color = settings.bezierCurveColor;
-                    Gizmos.DrawLine(origin, transform.TransformPoint(vectorFrames[i + 1].Origin));
+                    Gizmos.DrawLine(origin, vectorFrames[i + 1].GlobalOrigin);
                 }
 
                 if (settings.showNormals)
