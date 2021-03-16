@@ -2,30 +2,29 @@
 using UnityEngine;
 
 // ReSharper disable TooWideLocalVariableScope
-
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
     public static class BezierUtils
     {
-        public class VectorFrame {
+        public class BezierPos {
             public Vector3 Origin { get; set;  }
 
             public Vector3 Tangent { get; }
 
-            public Vector3 RotationAxis { get; set; }
+            public Vector3 LocalUp { get; set; }
 
             public Vector3 Normal { get; set; }
 
-            public VectorFrame(Vector3 origin, Vector3 tangent, Vector3 rotAxis, Vector3 normal) {
+            public BezierPos(Vector3 origin, Vector3 tangent, Vector3 localUp, Vector3 normal) {
                 Origin = origin;
                 Tangent = tangent;
-                RotationAxis = rotAxis;
+                LocalUp = localUp;
                 Normal = normal;
             }
         }
 
-        public static List<VectorFrame> GenerateRotationMinimisingFrames(this BezierSpline be) {
-            List<VectorFrame> frames = new List<VectorFrame>();
+        public static List<BezierPos> GenerateRotationMinimisingFrames(this BezierSpline be) {
+            List<BezierPos> frames = new List<BezierPos>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
                 var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
@@ -39,12 +38,12 @@ namespace SplineEditor.Runtime {
             return frames;
         }
 
-        private static List<VectorFrame> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint, int divisions) {
+        private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint, int divisions) {
             int steps = divisions;
-            var frames = new List<VectorFrame>();
+            var frames = new List<BezierPos>();
             float step = 1.0f / steps;
             float t;
-            VectorFrame x;
+            BezierPos x;
             
             Quaternion startRotation = startPoint.transform.rotation * Quaternion.Euler(0,0,startPoint.roll);
             Quaternion endRotation = endPoint.transform.rotation * Quaternion.Euler(0,0,endPoint.roll);
@@ -54,16 +53,16 @@ namespace SplineEditor.Runtime {
                 
                 Quaternion rotation = Quaternion.Lerp(startRotation, endRotation, t); 
                 x.Normal = rotation * Vector3.right;
-                x.RotationAxis = rotation * Vector3.up;
+                x.LocalUp = rotation * Vector3.up;
                 frames.Add(x);
             }
 
             return frames;
         }
         
-        private static VectorFrame GetFrenetFrame(BezierNode startPoint, BezierNode endPoint, float t) {
-            return new VectorFrame(GetBezierPos(startPoint, endPoint, t), Tangent(startPoint, endPoint, t).normalized, 
-                RotationAxis(startPoint, endPoint, t).normalized, Normal(startPoint, endPoint, t).normalized);
+        private static BezierPos GetFrenetFrame(BezierNode startPoint, BezierNode endPoint, float t) {
+            return new BezierPos(GetBezierPos(startPoint, endPoint, t), Tangent(startPoint, endPoint, t).normalized, 
+                LocalUp(startPoint, endPoint, t).normalized, Normal(startPoint, endPoint, t).normalized);
         }
 
         private static Vector3 ComputeBezier (float t, Vector3 a, Vector3 b, Vector3 c, Vector3 d) {
@@ -98,11 +97,11 @@ namespace SplineEditor.Runtime {
 
         private static Vector3 Normal(BezierNode startPoint, BezierNode endPoint, float t) {
             Vector3 a = Tangent(startPoint, endPoint, t);
-            Vector3 r = RotationAxis(startPoint, endPoint, t);
+            Vector3 r = LocalUp(startPoint, endPoint, t);
             return Vector3.Cross(r, a).normalized;
         }
 
-        private static Vector3 RotationAxis(BezierNode startPoint, BezierNode endPoint, float t) {
+        private static Vector3 LocalUp(BezierNode startPoint, BezierNode endPoint, float t) {
             Vector3 a = Tangent(startPoint, endPoint, t);
             Vector3 b = (a + ComputeBezierDoubleDerivative(startPoint, endPoint, t)).normalized;
             var result =  Vector3.Cross(b, a).normalized;
@@ -110,7 +109,7 @@ namespace SplineEditor.Runtime {
             return result;
         }
 
-        private static Vector3 GetClosestPointRecursive(Vector3 position, BezierNode nodeBegin, 
+        private static BezierPos GetClosestPointRecursive(Vector3 position, BezierNode nodeBegin, 
             BezierNode nodeEnd, float t0, float t1, float step, float precision) {
             float newStep = step / 2;
             float minDistance = float.MaxValue;
@@ -124,23 +123,24 @@ namespace SplineEditor.Runtime {
                     newT1 = t + newStep;
                 }
             }
-            if(newStep <= precision)
-                return GetBezierPos(nodeBegin, nodeEnd, newT0);
+
+            if (newStep <= precision) {
+                Quaternion startRotation = nodeBegin.transform.rotation * Quaternion.Euler(0,0,nodeBegin.roll);
+                Quaternion endRotation = nodeEnd.transform.rotation * Quaternion.Euler(0,0,nodeEnd.roll);
+                
+                BezierPos bezierPos = GetFrenetFrame(nodeBegin, nodeEnd, newT0);
+                
+                Quaternion rotation = Quaternion.Lerp(startRotation, endRotation, newT0); 
+                bezierPos.Normal = rotation * Vector3.right;
+                bezierPos.LocalUp = rotation * Vector3.up;
+                return bezierPos;
+            }
+            
             return GetClosestPointRecursive(position, nodeBegin, nodeEnd, newT0, newT1, newStep,
                 precision);
         }
 
-        public static Vector3 GetClosestPoint(this BezierSpline be, Vector3 position) {
-            // f(t) = 0.5 * Vector3.Dot(p(t)-X,p(t)-X)
-            // Minimization can be achieved by finding all of the roots of the derivative
-            // f'(t)=dot(p'(t), p(t)-X)
-            // inside the interval and comparing the function values of the roots and at
-            // the end points of the interval
-
-            // 1. find extremities control points of position
-            // 2. search closest point between interval and recursively reduce interval and step
-            // return result when step <= wanted precision (dichotomy like research)
-
+        public static BezierPos GetClosestPoint(this BezierSpline be, Vector3 position) {
             float minDistance = float.MaxValue;
             int indexControlPointEnd = be.bezierNodes.Count;
             for (int i = be.bezierNodes.Count - 1; i > 0; --i) {

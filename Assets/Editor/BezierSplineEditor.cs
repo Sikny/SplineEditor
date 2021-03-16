@@ -9,11 +9,11 @@ namespace SplineEditor.Editor {
         private UnityEditor.Editor _editor;
 
         private bool _showSettings;
-        private bool _isEditorNotNull;
+        private bool _isEditorNull;
 
         private void Awake()
         {
-            _isEditorNotNull = _editor != null;
+            _isEditorNull = _editor == null;
         }
 
         public override void OnInspectorGUI() {
@@ -22,9 +22,13 @@ namespace SplineEditor.Editor {
             EditorGUILayout.PropertyField(serializedObject.FindProperty("settings"), GUIContent.none);
             _showSettings = EditorGUILayout.Foldout(_showSettings, "Settings");
             if (_showSettings) {
-                CreateCachedEditor(serializedObject.FindProperty("settings").objectReferenceValue, null, ref _editor);
-                if (_isEditorNotNull)
-                    _editor.OnInspectorGUI();
+                if (_isEditorNull) {
+                    CreateCachedEditor(serializedObject.FindProperty("settings").objectReferenceValue, null,
+                        ref _editor);
+                    _isEditorNull = _editor == null;
+                }
+
+                _editor.OnInspectorGUI();
             }
             
             serializedObject.ApplyModifiedProperties();
