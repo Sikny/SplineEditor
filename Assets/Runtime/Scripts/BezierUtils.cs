@@ -144,7 +144,7 @@ namespace SplineEditor.Runtime {
             float minDistance = float.MaxValue;
             int indexControlPointEnd = be.bezierNodes.Count;
             for (int i = be.bezierNodes.Count - 1; i > 0; --i) {
-                float distance = Vector3.Distance(be.transform.TransformPoint(be.bezierNodes[i].transform.position), position);
+                float distance = Vector3.Distance(be.bezierNodes[i].transform.position, position);
                 if (distance < minDistance) {
                     minDistance = distance;
                     indexControlPointEnd = i;
