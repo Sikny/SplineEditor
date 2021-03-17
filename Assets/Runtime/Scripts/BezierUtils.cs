@@ -43,7 +43,6 @@ namespace SplineEditor.Runtime {
                     be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
                 foreach (var vFrame in vFrames)
                 {
-                    //vFrame.Origin = be.transform.InverseTransformPoint(vFrame.Origin);
                     frames.Add(vFrame);
                 }
             }

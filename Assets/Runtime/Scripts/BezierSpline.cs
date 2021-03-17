@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -17,6 +18,10 @@ namespace SplineEditor.Runtime
             BezierNode newPoint = Instantiate(bezierNodes[bezierNodes.Count - 1]);
             newPoint.transform.localPosition += newPoint.GlobalTangent2.normalized * 2;
             bezierNodes.Add(newPoint);
+        }
+
+        public void UpdateNodes() {
+            bezierNodes = new List<BezierNode>(GetComponentsInChildren<BezierNode>());
         }
 
         private void OnDrawGizmos()

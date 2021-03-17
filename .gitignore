@@ -75,3 +75,6 @@ InitTestScene*.unity
 
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+/[Aa]ssets/Data/
+/[Aa]ssets/Data.meta

@@ -1,6 +1,7 @@
 {
     "name": "com.sikny.splineeditor",
-    "version": "0.3.3",
+    "publishConfig": { "registry": "https://npm.pkg.github.com/@Sikny" },
+    "version": "0.3.4",
     "displayName": "Spline Editor",
     "description": "Spline editor using cubic bezier curves",
     "unity": "2019.4",
