@@ -27,6 +27,16 @@ namespace SplineEditor.Runtime
             set => tangentEnd.position = value;
         }
 
+        public Vector3 LocalTangent1 {
+            get => tangentStart.localPosition;
+            set => tangentStart.localPosition = value;
+        }
+
+        public Vector3 LocalTangent2 {
+            get => tangentEnd.localPosition;
+            set => tangentEnd.localPosition = value;
+        }
+
         public void UpdateMirrorPos(Transform controlPoint)
         {
             var target = controlPoint == tangentStart ? tangentEnd : tangentStart;
