@@ -8,16 +8,17 @@ namespace SplineEditor.Runtime {
     [Serializable]
     public class BezierSplineData {
         public int instanceID;
-        public List<BezierNodeData> nodes;
+        [SerializeField] public BezierNodeData[] nodes;
         public int divisions;
 
         public BezierSplineData(BezierSpline spline) {
             instanceID = spline.GetInstanceID();
-            nodes = new List<BezierNodeData>();
+            nodes = new BezierNodeData[spline.bezierNodes.Count];
             divisions = spline.divisionsBetweenTwoPoints;
+            int i = 0;
             foreach (var bezierNode in spline.bezierNodes) {
                 BezierNodeData nodeData = new BezierNodeData(bezierNode);
-                nodes.Add(nodeData);
+                nodes[i++] = nodeData;
             }
         }
 
@@ -32,7 +33,7 @@ namespace SplineEditor.Runtime {
             
             spline.bezierNodes = new List<BezierNode>();
 
-            int nodeCount = nodes.Count;
+            int nodeCount = nodes.Length;
             for (int i = 0; i < nodeCount; i++) {
                 var newNode = i == 0 ? oldNodes[0] : Object.Instantiate(oldNodes[0], oldNodes[0].transform.parent);
                 nodes[i].Init(newNode);
@@ -70,19 +71,18 @@ namespace SplineEditor.Runtime {
     }
     
     public class BezierData : ScriptableObject {
-        [SerializeField] private List<BezierSplineData> splinesData;
+        [SerializeField] private BezierSplineData[] splinesData;
 
-        public void SaveSceneBezierSplines() {
-            BezierSpline[] splines = FindObjectsOfType<BezierSpline>();
-            splinesData = new List<BezierSplineData>();
+        public void SaveSceneBezierSplines(BezierSpline[] splines) {
+            splinesData = new BezierSplineData[splines.Length];
+            int i = 0;
             foreach (var spline in splines) {
                 BezierSplineData splineData = new BezierSplineData(spline);
-                splinesData.Add(splineData);
+                splinesData[i++] = splineData;
             }
         }
 
-        public void LoadSceneBezierSplines() {
-            BezierSpline[] splines = FindObjectsOfType<BezierSpline>();
+        public void LoadSceneBezierSplines(BezierSpline[] splines) {
             foreach (var spline in splines) {
                 foreach (var splineData in splinesData) {
                     if (spline.GetInstanceID() == splineData.instanceID) {
