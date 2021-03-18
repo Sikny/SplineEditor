@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime
 {
-    public class BezierSpline : MonoBehaviour
-    {
+    public class BezierSpline : MonoBehaviour {
         public BezierSettings settings;
 
         public List<BezierNode> bezierNodes;
