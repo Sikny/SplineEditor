@@ -5,6 +5,7 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public class BezierMeshExtrusion : MonoBehaviour {
         public MeshFilter meshFilter;
+        public MeshCollider meshCollider;
         public BezierSpline bezierSpline;
 
         public float roadWidth = 1;
@@ -133,6 +134,7 @@ namespace SplineEditor.Runtime {
             mesh.normals = normals;
             mesh.triangles = triangles;
             meshFilter.mesh = mesh;
+            meshCollider.sharedMesh = mesh;
         }
     }
 }

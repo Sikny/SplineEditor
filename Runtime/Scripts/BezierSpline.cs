@@ -15,7 +15,7 @@ namespace SplineEditor.Runtime
         {
             BezierNode newPoint = Instantiate(bezierNodes[bezierNodes.Count - 1]);
             newPoint.transform.localPosition += newPoint.GlobalTangent2.normalized * 2;
-            bezierNodes.Add(newPoint);
+            UpdateNodes();
         }
 
         public void UpdateNodes() {
