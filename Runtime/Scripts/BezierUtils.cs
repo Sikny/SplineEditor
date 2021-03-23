@@ -27,9 +27,7 @@ namespace SplineEditor.Runtime {
                 T = t;
                 GlobalOrigin = GetBezierPos(start, end, t);
                 Tangent = Tangent(start, end, t).normalized;
-                Quaternion startRotation = start.transform.rotation * Quaternion.Euler(0,0,start.roll);
-                Quaternion endRotation = end.transform.rotation * Quaternion.Euler(0,0,end.roll);
-                Quaternion rotation = Quaternion.Lerp(startRotation, endRotation, t); 
+                Quaternion rotation = Quaternion.Lerp(start.transform.rotation, end.transform.rotation, t); 
                 Normal = rotation * Vector3.right;
                 LocalUp = rotation * Vector3.up;
             }
@@ -70,7 +68,7 @@ namespace SplineEditor.Runtime {
         }
 
         private static Vector3 GetBezierPos(BezierNode startPoint, BezierNode endPoint, float t) {
-            return ComputeBezier(t, startPoint.transform.position, startPoint.GlobalTangent2, endPoint.GlobalTangent1, endPoint.transform.position);
+            return ComputeBezier(t, startPoint.transform.position, startPoint.GlobalTangentEnd, endPoint.GlobalTangentStart, endPoint.transform.position);
         }
         
         private static float ComputeBezierDerivative (float t, float a, float b, float c, float d) {
@@ -83,9 +81,9 @@ namespace SplineEditor.Runtime {
         private static Vector3 Tangent(BezierNode startPoint, BezierNode endPoint, float t)
         {
             Vector3 startPos = startPoint.transform.position, endPos = endPoint.transform.position;
-            float x = ComputeBezierDerivative(t, startPos.x, startPoint.GlobalTangent2.x, endPoint.GlobalTangent1.x, endPos.x);
-            float y = ComputeBezierDerivative(t, startPos.y, startPoint.GlobalTangent2.y, endPoint.GlobalTangent1.y, endPos.y);
-            float z = ComputeBezierDerivative(t, startPos.z, startPoint.GlobalTangent2.z, endPoint.GlobalTangent1.z, endPos.z);
+            float x = ComputeBezierDerivative(t, startPos.x, startPoint.GlobalTangentEnd.x, endPoint.GlobalTangentStart.x, endPos.x);
+            float y = ComputeBezierDerivative(t, startPos.y, startPoint.GlobalTangentEnd.y, endPoint.GlobalTangentStart.y, endPos.y);
+            float z = ComputeBezierDerivative(t, startPos.z, startPoint.GlobalTangentEnd.z, endPoint.GlobalTangentStart.z, endPos.z);
             return new Vector3(x, y, z).normalized;
         }
 

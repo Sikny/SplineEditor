@@ -1,49 +1,58 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime
 {
-    [Serializable]
+    public enum NodeMode{
+        Free,
+        Aligned,
+        Mirrored
+    }
+    
     public class BezierNode : MonoBehaviour
     {
         public BezierSettings settings;
-        [Space(15f)]
+        [Space(15f)] [SerializeField] private NodeMode nodeMode;
         [SerializeField] private Transform tangentStart;
         [SerializeField] private Transform tangentEnd;
-        public float roll;
 
 
-        public Vector3 GlobalTangent1
+        public Vector3 GlobalTangentStart
         {
             get => tangentStart.position;
             set => tangentStart.position = value;
         }
 
-        public Vector3 GlobalTangent2
+        public Vector3 GlobalTangentEnd
         {
             get => tangentEnd.position;
             set => tangentEnd.position = value;
         }
 
-        public Vector3 LocalTangent1 {
+        public Vector3 LocalTangentStart {
             get => tangentStart.localPosition;
             set => tangentStart.localPosition = value;
         }
 
-        public Vector3 LocalTangent2 {
+        public Vector3 LocalTangentEnd {
             get => tangentEnd.localPosition;
             set => tangentEnd.localPosition = value;
         }
 
         public void UpdateMirrorPos(Transform controlPoint)
         {
+            if(nodeMode == NodeMode.Free) return;
             var target = controlPoint == tangentStart ? tangentEnd : tangentStart;
 
             Vector3 tPos = transform.position;
             Vector3 direction = controlPoint.position - tPos;
-            target.position = tPos - direction;
+
+            float distance;
+            if (nodeMode == NodeMode.Mirrored) distance = direction.magnitude;
+            else distance = Vector3.Distance(target.position, transform.position);  // Aligned
+            
+            target.position = tPos - distance * direction.normalized;
         }
 
         private void OnDrawGizmos()
