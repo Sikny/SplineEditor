@@ -55,18 +55,16 @@ namespace SplineEditor.Runtime {
             Transform nodeT = node.transform;
             localPosition = nodeT.localPosition;
             localRotation = nodeT.localRotation;
-            tangentStart = node.LocalTangent1;
-            tangentStart = node.LocalTangent2;
-            roll = node.roll;
+            tangentStart = node.LocalTangentStart;
+            tangentStart = node.LocalTangentEnd;
         }
 
         public void Init(BezierNode node) {
             Transform nodeT = node.transform;
             nodeT.localPosition = localPosition;
             nodeT.localRotation = localRotation;
-            node.LocalTangent1 = tangentStart;
-            node.LocalTangent2 = tangentEnd;
-            node.roll = roll;
+            node.LocalTangentStart = tangentStart;
+            node.LocalTangentEnd = tangentEnd;
         }
     }
     

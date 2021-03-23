@@ -14,7 +14,7 @@ namespace SplineEditor.Runtime
         public void AddCurve()
         {
             BezierNode newPoint = Instantiate(bezierNodes[bezierNodes.Count - 1]);
-            newPoint.transform.localPosition += newPoint.GlobalTangent2.normalized * 2;
+            newPoint.transform.localPosition += newPoint.GlobalTangentEnd.normalized * 2;
             UpdateNodes();
         }
 

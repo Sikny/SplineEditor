@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 8e7aae4bdb8fb4247b38116f9fe82c4c, type: 2}
+  nodeMode: 3
   tangentStart: {fileID: 2809489491619853140}
   tangentEnd: {fileID: 2953132080200256764}
-  roll: 0
 --- !u!1001 &2559281711448434992
 PrefabInstance:
   m_ObjectHideFlags: 0
