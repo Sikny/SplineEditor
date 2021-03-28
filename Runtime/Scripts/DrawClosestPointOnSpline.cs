@@ -11,7 +11,7 @@ namespace SplineEditor.Runtime {
             if (spline == null) return;
             Vector3 position = transform.position;
             Gizmos.color = Color.red;
-            BezierUtils.BezierPos pos = spline.GetClosestPoint(position);
+            BezierUtils.BezierPos pos = spline.GetClosestBezierPos(position);
             Gizmos.DrawSphere(pos.GlobalOrigin, 0.1f);
             Gizmos.DrawLine(pos.GlobalOrigin, transform.position);
             closestPosition = pos.GlobalOrigin;
