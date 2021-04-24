@@ -17,6 +17,8 @@ namespace SplineEditor.Runtime
         [SerializeField] private Transform tangentStart;
         [SerializeField] private Transform tangentEnd;
 
+        [ReadOnly] public float bezierDistance;
+
 
         public Vector3 GlobalTangentStart
         {

@@ -19,6 +19,8 @@ namespace SplineEditor.Runtime
 
             public Vector3 Normal { get; }
 
+            public Quaternion Rotation => Quaternion.LookRotation(Tangent, LocalUp);
+
             public BezierNode Start { get; }
             public BezierNode End { get; }
             public float T { get; }
@@ -61,11 +63,17 @@ namespace SplineEditor.Runtime
             float t;
             BezierPos x;
 
+            float distance = startPoint.bezierDistance;
+
             for (t = 0; t < 1.0f; t += step)
             {
                 x = new BezierPos(startPoint, endPoint, t);
+                if(t > 0)
+                    distance += Vector3.Distance(x.GlobalOrigin, frames[frames.Count-1].GlobalOrigin);
                 frames.Add(x);
             }
+
+            endPoint.bezierDistance = distance;
 
             return frames;
         }
@@ -100,6 +108,39 @@ namespace SplineEditor.Runtime
             float z = ComputeBezierDerivative(t, startPos.z, startPoint.GlobalTangentEnd.z,
                 endPoint.GlobalTangentStart.z, endPos.z);
             return new Vector3(x, y, z).normalized;
+        }
+
+        public static BezierPos GetBezierPos(this BezierSpline be, float distance)
+        {
+            var dist = distance < 0 ? 0 : distance;
+            var nodesCount = be.bezierNodes.Count;
+            BezierNode startNode = null;
+            BezierNode endNode = null;
+            float t = 0;
+            for (int i = 0; i < nodesCount; ++i)
+            {
+                if (be.bezierNodes[i].bezierDistance > dist)
+                {
+                    if (i == 0)
+                    {
+                        startNode = endNode = be.bezierNodes[0];
+                        t = 0;
+                        break;
+                    }
+                    endNode = be.bezierNodes[i];
+                    startNode = be.bezierNodes[i - 1];
+                    t = (dist - startNode.bezierDistance) / (endNode.bezierDistance - startNode.bezierDistance);
+                    break;
+                }
+            }
+            if (startNode == null)  // reached end of bezier spline
+            {
+                startNode = be.bezierNodes[nodesCount - 1];
+                endNode = be.bezierNodes[nodesCount - 1];
+                t = 1;
+            }
+
+            return new BezierPos(startNode, endNode, t);
         }
 
         public static BezierPos GetClosestPoint(this BezierSpline be, Vector3 position)
