@@ -7,6 +7,8 @@ namespace SplineEditor.Runtime
     public class BezierSpline : MonoBehaviour {
         public BezierSettings settings;
 
+        public bool loop;
+
         public List<BezierNode> bezierNodes;
 
         public int divisionsBetweenTwoPoints = 10;
@@ -20,6 +22,7 @@ namespace SplineEditor.Runtime
 
         public void UpdateNodes() {
             bezierNodes = new List<BezierNode>(GetComponentsInChildren<BezierNode>());
+            if(loop) bezierNodes.Add(bezierNodes[0]);
         }
 
         private void OnDrawGizmos()
