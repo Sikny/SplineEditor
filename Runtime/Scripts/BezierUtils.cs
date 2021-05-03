@@ -36,9 +36,14 @@ namespace SplineEditor.Runtime
                 Normal = rotation * Vector3.right;
                 LocalUp = rotation * Vector3.up;
             }
+
+            public BezierPos(BezierPos source) : this(source.Start, source.End, source.T)
+            {
+                
+            }
         }
 
-        public static List<BezierPos> GenerateRotationMinimisingFrames(this BezierSpline be)
+        public static void GenerateRotationMinimisingFrames(this BezierSpline be)
         {
             List<BezierPos> frames = new List<BezierPos>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
@@ -51,7 +56,7 @@ namespace SplineEditor.Runtime
                 }
             }
 
-            return frames;
+            be.RotationMinimisingFrames = frames;
         }
 
         private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint,
@@ -143,54 +148,50 @@ namespace SplineEditor.Runtime
             return new BezierPos(startNode, endNode, t);
         }
 
-        public static BezierPos GetClosestPoint(this BezierSpline be, Vector3 position)
-        {
-            float minDistance = float.MaxValue;
-            var frames = be.GenerateRotationMinimisingFrames();
-            var closestFrame = frames[0];
-
-            for (int i = frames.Count - 1; i >= 0; --i)
-            {
-                float distance = Vector3.Distance(frames[i].GlobalOrigin, position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestFrame = frames[i];
-                }
-            }
-
-            return closestFrame;
-        }
-
         public static BezierPos GetClosestBezierPos(this BezierSpline be, Vector3 pos, float prioritySideFactor = 1)
         {
             Vector3 localPos = be.transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
             float dist = float.PositiveInfinity;
             float newDist;
             BezierPos bP = null;
-            BezierNode startNode;
             Vector3 diff;
 
-            for (int i = 0; i < be.bezierNodes.Count - 1; i++)
-            {
-                startNode = be.bezierNodes[i];
-                var currentFrames =
-                    GenerateRotationMinimisingFrames(startNode, be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
+            BezierPos lineStart = null;
+            BezierPos lineEnd = null;
 
-                for (int j = 0; j < currentFrames.Count; j++)
+            var frames = be.RotationMinimisingFrames;
+            var framesCount = frames.Count;
+
+            for (int j = 0; j < framesCount; ++j)
+            {
+                diff = localPos - frames[j].LocalOrigin;
+                if (Vector3.Angle(diff, frames[j].Normal) < 90) newDist = diff.sqrMagnitude;
+                else newDist = diff.sqrMagnitude * prioritySideFactor;
+                if (newDist < dist)
                 {
-                    diff = localPos - currentFrames[j].LocalOrigin;
-                    if (Vector3.Angle(diff, currentFrames[j].Normal) < 90) newDist = diff.sqrMagnitude;
-                    else newDist = diff.sqrMagnitude * prioritySideFactor;
-                    if (newDist < dist)
-                    {
-                        dist = newDist;
-                        bP = currentFrames[j];
-                    }
+                    dist = newDist;
+                    bP = frames[j];
+                    lineStart = frames[j];
+                    lineEnd = j < frames.Count - 1 ? frames[j + 1] : lineStart;
                 }
             }
 
-            return bP;
+            Vector3 a = lineStart.GlobalOrigin;
+            Vector3 b = lineEnd.GlobalOrigin;
+            BezierPos result = new BezierPos(bP);
+            /*Vector3 projected = a + Vector3.Project(pos - a, b - a);
+            
+            // check on segment
+            float toStart = (projected - a).sqrMagnitude;
+            float toEnd = (projected - b).sqrMagnitude;
+            float ab = (a - b).sqrMagnitude;
+            
+            // TODO TOFIX
+            if (toStart + toEnd > ab)
+                projected = toStart > toEnd ? b : a;
+
+            result.GlobalOrigin = projected;*/
+            return result;
         }
     }
 }

@@ -5,17 +5,18 @@ using UnityEngine;
 namespace SplineEditor.Runtime {
     public class BezierMeshExtrusion : MonoBehaviour {
         public MeshFilter meshFilter;
-        public MeshCollider meshCollider;
+        public bool generateCollider;
         public BezierSpline bezierSpline;
-
         public float roadWidth = 1;
         public float roadThickness = 1;
+        
+        [SerializeField, HideInInspector] private MeshCollider meshCollider;
 
         [ContextMenu("Update Mesh")]
         public void UpdateMesh() {
             Mesh mesh = new Mesh();
             
-            List<BezierUtils.BezierPos> vectorFrames = bezierSpline.GenerateRotationMinimisingFrames();
+            List<BezierUtils.BezierPos> vectorFrames = bezierSpline.RotationMinimisingFrames;
             int arrayLen = vectorFrames.Count;
             
             var vertices = new Vector3[arrayLen * 2 * 4 + 8];    // 2 vertices per bezier vertex * (2 faces + 2 sides) + 2 extremities 
@@ -134,7 +135,17 @@ namespace SplineEditor.Runtime {
             mesh.normals = normals;
             mesh.triangles = triangles;
             meshFilter.mesh = mesh;
-            meshCollider.sharedMesh = mesh;
+
+            if (generateCollider)
+            {
+                if (!meshCollider)
+                {
+                    meshCollider = meshFilter.gameObject.GetComponent<MeshCollider>();
+                    if(!meshCollider) meshCollider = meshFilter.gameObject.AddComponent<MeshCollider>();
+                }
+
+                meshCollider.sharedMesh = mesh;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -13,11 +14,19 @@ namespace SplineEditor.Runtime
 
         public int divisionsBetweenTwoPoints = 10;
 
-        public void AddCurve()
+        private List<BezierUtils.BezierPos> _rotationMinimisingFrames;
+
+        public List<BezierUtils.BezierPos> RotationMinimisingFrames
         {
-            BezierNode newPoint = Instantiate(bezierNodes[bezierNodes.Count - 1]);
-            newPoint.transform.localPosition += newPoint.GlobalTangentEnd.normalized * 2;
-            UpdateNodes();
+            get
+            {
+                if (_rotationMinimisingFrames == null)
+                {
+                    this.GenerateRotationMinimisingFrames();
+                }
+                return _rotationMinimisingFrames;
+            }
+            set => _rotationMinimisingFrames = value;
         }
 
         public void UpdateNodes() {
@@ -25,9 +34,14 @@ namespace SplineEditor.Runtime
             if(loop) bezierNodes.Add(bezierNodes[0]);
         }
 
+        private void OnValidate()
+        {
+            this.GenerateRotationMinimisingFrames();
+        }
+
         private void OnDrawGizmos()
         {
-            List<BezierUtils.BezierPos> vectorFrames = this.GenerateRotationMinimisingFrames();
+            List<BezierUtils.BezierPos> vectorFrames = RotationMinimisingFrames;
             int arrayLen = vectorFrames.Count;
             for (int i = 0; i < arrayLen; ++i)
             {
