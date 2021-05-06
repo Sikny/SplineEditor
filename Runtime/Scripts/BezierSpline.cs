@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -36,6 +35,7 @@ namespace SplineEditor.Runtime
 
         private void OnValidate()
         {
+            UpdateNodes();
             this.GenerateRotationMinimisingFrames();
         }
 
