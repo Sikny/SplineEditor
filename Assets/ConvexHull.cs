@@ -21,7 +21,7 @@ public class ConvexHull : MonoBehaviour
     [ContextMenu("HAHAHAHAHA")]
     void UpdateConvexHull()
     {
-        if (splinePositions == null) splinePositions = new List<Vector3>();
+        splinePositions = new List<Vector3>();
         splinePositions.Clear();
         convexHullPositions.Clear();
         foreach (var pos in spline.RotationMinimisingFrames)
@@ -35,7 +35,7 @@ public class ConvexHull : MonoBehaviour
 
     private void JarvisMarch()
     {
-        if (convexHullPositions == null) convexHullPositions = new List<Vector3>();
+        convexHullPositions = new List<Vector3>();
         Vector3 pointOnHull = getLeftestPoint();
         Debug.Log("pointOnHull " + pointOnHull);
         Vector3 endPoint;
