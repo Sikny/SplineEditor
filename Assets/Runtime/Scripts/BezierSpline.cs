@@ -7,6 +7,8 @@ namespace SplineEditor.Runtime
     public class BezierSpline : MonoBehaviour {
         public BezierSettings settings;
 
+        public bool useCasteljau;
+
         public bool loop;
 
         public List<BezierNode> bezierNodes;
@@ -39,30 +41,41 @@ namespace SplineEditor.Runtime
             this.GenerateRotationMinimisingFrames();
         }
 
-        private void OnDrawGizmos()
-        {
-            List<BezierUtils.BezierPos> vectorFrames = RotationMinimisingFrames;
-            int arrayLen = vectorFrames.Count;
-            for (int i = 0; i < arrayLen; ++i)
-            {
-                var origin = vectorFrames[i].GlobalOrigin;
+        private void OnDrawGizmos() {
+            if (useCasteljau) {
+                List<Vector3> positions = this.DeCasteljau();
+                int arrayLen = positions.Count;
+                for (int i = 0; i < arrayLen; ++i) {
+                    var origin = positions[i]; //.GlobalOrigin;
 
-                if (i < vectorFrames.Count - 1)
-                {
-                    Gizmos.color = settings.bezierCurveColor;
-                    Gizmos.DrawLine(origin, vectorFrames[i + 1].GlobalOrigin);
+                    if (i < positions.Count - 1) {
+                        Gizmos.color = settings.bezierCurveColor;
+                        Gizmos.DrawLine(origin, positions[i + 1] /*.GlobalOrigin*/);
+                    }
                 }
+            }
+            else {
+                List<BezierUtils.BezierPos> vectorFrames = RotationMinimisingFrames;
+                int arrayLen = vectorFrames.Count;
+                for (int i = 0; i < arrayLen; ++i) {
+                    var origin = vectorFrames[i].GlobalOrigin;
 
-                if (settings.showNormals)
-                {
-                    Gizmos.color = settings.normalsColor;
-                    Gizmos.DrawLine(origin, origin + vectorFrames[i].Normal);
-                }
+                    if (i < vectorFrames.Count - 1) {
+                        Gizmos.color = settings.bezierCurveColor;
+                        Gizmos.DrawLine(origin, vectorFrames[i + 1].GlobalOrigin);
+                    }
+                    
+                    if (settings.showNormals)
+                    {
+                        Gizmos.color = settings.normalsColor;
+                        Gizmos.DrawLine(origin, origin + vectorFrames[i].Normal);
+                    }
 
-                if (settings.showVerticalNormals)
-                {
-                    Gizmos.color = settings.verticalNormalsColor;
-                    Gizmos.DrawLine(origin, origin + vectorFrames[i].LocalUp);
+                    if (settings.showVerticalNormals)
+                    {
+                        Gizmos.color = settings.verticalNormalsColor;
+                        Gizmos.DrawLine(origin, origin + vectorFrames[i].LocalUp);
+                    }
                 }
             }
         }

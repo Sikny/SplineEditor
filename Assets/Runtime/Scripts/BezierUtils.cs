@@ -193,5 +193,41 @@ namespace SplineEditor.Runtime
             result.GlobalOrigin = projected;*/
             return result;
         }
+
+        public static List<Vector3> DeCasteljau(this BezierSpline be) {
+            List<Vector3> result = new List<Vector3>();
+            int n = be.bezierNodes.Count - 1;
+            float step = 1f / be.divisionsBetweenTwoPoints;
+            // calcul des points
+            List<Vector3> controlPoints = new List<Vector3>();
+            for (int i = 0; i <= n; ++i) {
+                controlPoints.Add(be.bezierNodes[i].transform.position);
+                if(i < n)
+                    controlPoints.Add(be.bezierNodes[i].GlobalTangentEnd);
+                if(i > 0)
+                    controlPoints.Add(be.bezierNodes[i].GlobalTangentStart);
+            }
+            Debug.Log(controlPoints.Count);
+
+            n = controlPoints.Count - 1;
+            
+            Vector3[][] points = new Vector3[n+1][];
+            for (int i = 0; i <= n; ++i) {
+                points[i] = new Vector3[n+1];
+                points[0][i] = controlPoints[i];
+            }
+            // casteljau
+            for (float t = 0; t <= 1; t += step) {
+                for (int j = 1; j <= n; ++j) {
+                    points[j] = new Vector3[n];
+                    for (int i = 0; i <= n - j; ++i) {
+                        points[j][i] = (1 - t) * points[j - 1][i] + t * points[j - 1][i + 1];
+                    }
+                }
+                result.Add(points[n][0]);
+            }
+            
+            return result;
+        }
     }
 }
