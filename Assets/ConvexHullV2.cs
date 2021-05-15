@@ -7,9 +7,12 @@ using UnityEngine;
 public class ConvexHullV2 : MonoBehaviour {
     public BezierSpline spline;
 
-
+    public bool useRealBezier;
+    
     public List<Vector3> hullPoints;
     public List<Vector3> sourcePositions;
+
+    public MeshFilter meshFilter;
 
     private void OnValidate() {
         BuildConvexHull();
@@ -19,16 +22,25 @@ public class ConvexHullV2 : MonoBehaviour {
     public void BuildConvexHull() {
         // building array
         List<Vector3> positions = new List<Vector3>();
-        foreach (var node in spline.bezierNodes) {
-            positions.AddPos(node.GlobalTangentStart);
-            positions.AddPos(node.transform.position);
-            positions.AddPos(node.GlobalTangentEnd);
+        if (!useRealBezier) {
+            foreach (var node in spline.bezierNodes) {
+                positions.AddPos(node.GlobalTangentStart);
+                positions.AddPos(node.transform.position);
+                positions.AddPos(node.GlobalTangentEnd);
+            }
         }
-
-        /* todo frames */
+        else {
+            List<BezierUtils.BezierPos> frames = spline.RotationMinimisingFrames;
+            foreach (var frame in frames) {
+                positions.AddPos(frame.GlobalOrigin);
+            }
+            positions.AddPos(frames[0].GlobalOrigin);
+        }
 
         sourcePositions = positions;
         hullPoints = ComputeConvexHull();
+
+        BuildMesh();
     }
 
     // https://gist.github.com/dLopreiato/7fd142d0b9728518552188794b8a750c
@@ -61,6 +73,30 @@ public class ConvexHullV2 : MonoBehaviour {
 
 
         return result;
+    }
+
+    private void BuildMesh() {
+        Mesh mesh = new Mesh();
+        Vector2[] positions = new Vector2[hullPoints.Count];
+        for (var index = 0; index < hullPoints.Count; ++index) {
+            var hullPoint = hullPoints[index];
+            hullPoint.x = hullPoint.z;
+            positions[index] = hullPoint;
+        }
+
+        Triangulator tr = new Triangulator(positions);
+        int[] indices = tr.Triangulate();
+        Vector3[] vertices = new Vector3[positions.Length];
+        for (int i = 0; i < vertices.Length; ++i) {
+            vertices[i] = new Vector3(0, positions[i].y, positions[i].x);
+        }
+
+        mesh.vertices = vertices;
+        mesh.triangles = indices;
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        meshFilter.sharedMesh = mesh;
     }
 
     private void OnDrawGizmos() {
