@@ -207,7 +207,6 @@ namespace SplineEditor.Runtime
                 if(i > 0)
                     controlPoints.Add(be.bezierNodes[i].GlobalTangentStart);
             }
-            Debug.Log(controlPoints.Count);
 
             n = controlPoints.Count - 1;
             

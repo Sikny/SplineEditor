@@ -27,8 +27,8 @@ namespace SplineEditor.Runtime
             splineT.localPosition = Vector3.zero;
 
 
+            bezierSpline.UpdateNodes();
             bezierMeshExtrusion.transform.localPosition = Vector3.zero;
-            bezierMeshExtrusion.bezierSpline.UpdateNodes();
             bezierMeshExtrusion.UpdateMesh();
         }
         #endif

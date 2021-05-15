@@ -33,12 +33,11 @@ namespace SplineEditor.Runtime
         public void UpdateNodes() {
             bezierNodes = new List<BezierNode>(GetComponentsInChildren<BezierNode>());
             if(loop) bezierNodes.Add(bezierNodes[0]);
+            this.GenerateRotationMinimisingFrames();
         }
 
-        private void OnValidate()
-        {
+        private void OnValidate() {
             UpdateNodes();
-            this.GenerateRotationMinimisingFrames();
         }
 
         private void OnDrawGizmos() {

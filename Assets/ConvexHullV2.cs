@@ -29,7 +29,6 @@ public class ConvexHullV2 : MonoBehaviour {
 
         sourcePositions = positions;
         hullPoints = ComputeConvexHull();
-        Debug.Log(hullPoints.Count + " points");
     }
 
     // https://gist.github.com/dLopreiato/7fd142d0b9728518552188794b8a750c
@@ -44,7 +43,7 @@ public class ConvexHullV2 : MonoBehaviour {
             Vector3 p = sourcePositions[i], p1;
 
             while (L >= 2 && ((p1 = result[result.Count - 1]) - result[result.Count - 2]).Cross(p - p1) >= 0) {
-                result.PopLast();
+                result.RemoveAt(result.Count - 1);
                 --L;
             }
 
@@ -52,7 +51,7 @@ public class ConvexHullV2 : MonoBehaviour {
             ++L;
 
             while (U >= 2 && ((p1 = result[0]) - result[1]).Cross(p - p1) <= 0) {
-                result.PopFirst();
+                result.RemoveAt(0);
                 --U;
             }
             if(U != 0)
@@ -83,19 +82,5 @@ public static class PosUtils {
     public static float Cross(this Vector3 a, Vector3 b)
     {
         return a.z * b.y - a.y * b.z;
-    }
-    
-    public static Vector3 PopLast(this List<Vector3> list)
-    {
-        Vector3 retVal = list[list.Count - 1];
-        list.RemoveAt(list.Count - 1);
-        return retVal;
-    }
-    
-    public static Vector3 PopFirst(this List<Vector3> list)
-    {
-        Vector3 retVal = list[0];
-        list.RemoveAt(0);
-        return retVal;
     }
 }
