@@ -201,11 +201,11 @@ namespace SplineEditor.Runtime
             // calcul des points
             List<Vector3> controlPoints = new List<Vector3>();
             for (int i = 0; i <= n; ++i) {
+                if(i > 0)
+                    controlPoints.Add(be.bezierNodes[i].GlobalTangentStart);
                 controlPoints.Add(be.bezierNodes[i].transform.position);
                 if(i < n)
                     controlPoints.Add(be.bezierNodes[i].GlobalTangentEnd);
-                if(i > 0)
-                    controlPoints.Add(be.bezierNodes[i].GlobalTangentStart);
             }
 
             n = controlPoints.Count - 1;

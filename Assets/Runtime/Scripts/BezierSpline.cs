@@ -45,11 +45,9 @@ namespace SplineEditor.Runtime
                 List<Vector3> positions = this.DeCasteljau();
                 int arrayLen = positions.Count;
                 for (int i = 0; i < arrayLen; ++i) {
-                    var origin = positions[i]; //.GlobalOrigin;
-
                     if (i < positions.Count - 1) {
                         Gizmos.color = settings.bezierCurveColor;
-                        Gizmos.DrawLine(origin, positions[i + 1] /*.GlobalOrigin*/);
+                        Gizmos.DrawLine(positions[i], positions[i + 1]);
                     }
                 }
             }
