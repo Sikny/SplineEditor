@@ -22,6 +22,7 @@ public class ConvexHull : MonoBehaviour
     void UpdateConvexHull()
     {
         splinePositions = new List<Vector3>();
+        convexHullPositions = new List<Vector3>();
         splinePositions.Clear();
         convexHullPositions.Clear();
         foreach (var pos in spline.RotationMinimisingFrames)
@@ -39,6 +40,7 @@ public class ConvexHull : MonoBehaviour
         Vector3 pointOnHull = getLeftestPoint();
         Debug.Log("pointOnHull " + pointOnHull);
         Vector3 endPoint;
+        int crashHandler = 0;
         do
         {
             Debug.Log("do");
@@ -50,14 +52,20 @@ public class ConvexHull : MonoBehaviour
                 Debug.Log(p);
             }
             endPoint = splinePositions[0];
+            int lastPos = -1;
             for (int j = 0; j < splinePositions.Count; j++)
             {
-                if (endPoint == pointOnHull || isPointLeftToLine(splinePositions[j],convexHullPositions.Last(),endPoint))
+                if (endPoint == pointOnHull ||
+                    isPointLeftToLine(splinePositions[j], convexHullPositions.Last(), endPoint))
+                {
+                    lastPos = j;
                     endPoint = splinePositions[j];
-                pointOnHull = endPoint;
+                }
             }
-
-        } while (endPoint == convexHullPositions.First());
+            if(lastPos != -1)splinePositions.RemoveAt(lastPos);
+            pointOnHull = endPoint;
+            crashHandler++;
+        } while (endPoint != convexHullPositions.First() && crashHandler < 100000);
 
         /*// S is the set of points
     // P will be the set of points which form the convex hull. Final set size is i.
@@ -77,7 +85,7 @@ public class ConvexHull : MonoBehaviour
 
     private bool isPointLeftToLine(Vector3 point, Vector3 lineA, Vector3 lineB)
     {
-        return (lineB.x - lineA.x) * (point.y - lineA.y) - (lineA.y - lineA.y) * (point.x - lineA.x) >= 0;
+        return (lineB.z - lineA.z) * (point.y - lineA.y) - (lineA.y - lineA.y) * (point.z - lineA.z) < 0;
     }
 
     private Vector3 getLeftestPoint()
