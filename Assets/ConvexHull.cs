@@ -43,7 +43,6 @@ public class ConvexHull : MonoBehaviour
         int crashHandler = 0;
         do
         {
-            Debug.Log("do");
             convexHullPositions.Add(pointOnHull);
             Debug.Log("convexHullPositions" + convexHullPositions[0]);
             Debug.Log(convexHullPositions);
