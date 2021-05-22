@@ -48,6 +48,7 @@ namespace SplineEditor.Runtime
             List<BezierPos> frames = new List<BezierPos>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
+                if (i == 0) be.bezierNodes[0].bezierDistance = 0;
                 var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
                     be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
                 foreach (var vFrame in vFrames)
