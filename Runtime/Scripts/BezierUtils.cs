@@ -48,7 +48,6 @@ namespace SplineEditor.Runtime
             List<BezierPos> frames = new List<BezierPos>();
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
-                if (i == 0) be.bezierNodes[0].bezierDistance = 0;
                 var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
                     be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
                 foreach (var vFrame in vFrames)
@@ -58,6 +57,8 @@ namespace SplineEditor.Runtime
             }
 
             be.RotationMinimisingFrames = frames;
+            be.bezierLength = be.bezierNodes[0].bezierDistance;
+            be.bezierNodes[0].bezierDistance = 0;
         }
 
         private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint,
@@ -125,7 +126,8 @@ namespace SplineEditor.Runtime
             float t = 0;
             for (int i = 0; i < nodesCount; ++i)
             {
-                if (be.bezierNodes[i].bezierDistance > dist)
+                if (i < nodesCount - 1 && be.bezierNodes[i].bezierDistance > dist 
+                    || i == nodesCount - 1 && be.bezierLength > dist)
                 {
                     if (i == 0)
                     {
@@ -135,7 +137,10 @@ namespace SplineEditor.Runtime
                     }
                     endNode = be.bezierNodes[i];
                     startNode = be.bezierNodes[i - 1];
-                    t = (dist - startNode.bezierDistance) / (endNode.bezierDistance - startNode.bezierDistance);
+                    if(i == nodesCount - 1)
+                        t = (dist - startNode.bezierDistance) / (be.bezierLength - startNode.bezierDistance);
+                    else
+                        t = (dist - startNode.bezierDistance) / (endNode.bezierDistance - startNode.bezierDistance);
                     break;
                 }
             }

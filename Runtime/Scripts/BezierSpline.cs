@@ -28,6 +28,8 @@ namespace SplineEditor.Runtime
             set => _rotationMinimisingFrames = value;
         }
 
+        [ReadOnly] public float bezierLength;
+
         public void UpdateNodes() {
             bezierNodes = new List<BezierNode>(GetComponentsInChildren<BezierNode>());
             if(loop) bezierNodes.Add(bezierNodes[0]);
