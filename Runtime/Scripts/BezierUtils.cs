@@ -24,12 +24,14 @@ namespace SplineEditor.Runtime
             public BezierNode Start { get; }
             public BezierNode End { get; }
             public float T { get; }
+            public float BezierDistance { get; set; }
 
-            public BezierPos(BezierNode start, BezierNode end, float t)
+            public BezierPos(BezierNode start, BezierNode end, float t, float bezierDistance)
             {
                 Start = start;
                 End = end;
                 T = t;
+                BezierDistance = bezierDistance;
                 GlobalOrigin = GetBezierPos(start, end, t);
                 Tangent = Tangent(start, end, t).normalized;
                 Quaternion rotation = Quaternion.Lerp(start.transform.rotation, end.transform.rotation, t);
@@ -37,8 +39,7 @@ namespace SplineEditor.Runtime
                 LocalUp = rotation * Vector3.up;
             }
 
-            public BezierPos(BezierPos source) : this(source.Start, source.End, source.T)
-            {
+            public BezierPos(BezierPos source) : this(source.Start, source.End, source.T, source.BezierDistance) {
                 
             }
         }
@@ -74,9 +75,12 @@ namespace SplineEditor.Runtime
 
             for (t = 0; t < 1.0f; t += step)
             {
-                x = new BezierPos(startPoint, endPoint, t);
-                if(t > 0)
-                    distance += Vector3.Distance(x.GlobalOrigin, frames[frames.Count-1].GlobalOrigin);
+                x = new BezierPos(startPoint, endPoint, t, distance);
+                if (t > 0) {
+                    distance += Vector3.Distance(x.GlobalOrigin, frames[frames.Count - 1].GlobalOrigin);
+                    x.BezierDistance = distance;
+                }
+
                 frames.Add(x);
             }
 
@@ -151,7 +155,7 @@ namespace SplineEditor.Runtime
                 t = 1;
             }
 
-            return new BezierPos(startNode, endNode, t);
+            return new BezierPos(startNode, endNode, t, distance);
         }
 
         public static BezierPos GetClosestBezierPos(this BezierSpline be, Vector3 pos, float prioritySideFactor = 1)
