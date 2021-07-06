@@ -19,5 +19,11 @@ namespace SplineEditor.Runtime
             t.position = bezierPos.GlobalOrigin + bezierPos.Normal * horizontalOffset + bezierPos.LocalUp * verticalOffset;
             t.rotation = bezierPos.Rotation;
         }
+        
+        [ContextMenu("Compute Distance From Position")]
+        private void ComputeDistanceFromPosition(){
+            distance = spline.GetClosestBezierPos(transform.position).BezierDistance;
+            OnValidate();
+        }
     }
 }
