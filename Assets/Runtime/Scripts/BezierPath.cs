@@ -20,12 +20,13 @@ namespace SplineEditor.Runtime
             if (Application.isPlaying) return;
 
             Transform t = transform;
-            t.rotation = Quaternion.identity;
+            t.localRotation = Quaternion.identity;
             t.localScale = Vector3.one;
 
             Transform splineT = bezierSpline.transform; 
             splineT.localPosition = Vector3.zero;
 
+            bezierMeshExtrusion.transform.rotation = Quaternion.identity;
 
             bezierMeshExtrusion.bezierSpline.UpdateNodes();
             bezierMeshExtrusion.transform.localPosition = Vector3.zero;
