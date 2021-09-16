@@ -20,7 +20,6 @@ namespace SplineEditor.Runtime
             if (Application.isPlaying) return;
 
             Transform t = transform;
-            t.localRotation = Quaternion.identity;
             t.localScale = Vector3.one;
 
             Transform splineT = bezierSpline.transform; 
