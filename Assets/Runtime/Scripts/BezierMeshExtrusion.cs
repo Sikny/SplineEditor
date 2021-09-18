@@ -33,7 +33,8 @@ namespace SplineEditor.Runtime {
             int indexTriangles = 0;
             
             for (int i = 0; i < arrayLen; ++i) {
-                var bezierCenter = vectorFrames[i].GlobalOrigin;
+                
+                var bezierCenter = vectorFrames[i].GlobalOrigin - transform.position;
                 var normal = vectorFrames[i].Normal;
                 var rotAxis = vectorFrames[i].LocalUp;
                 
