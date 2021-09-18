@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityExtendedEditor.PrefabUtility;
 
 // ReSharper disable once CheckNamespace
 namespace SplineEditor.Runtime {
-    public class BezierMeshExtrusion : MonoBehaviour {
+    public class BezierMeshExtrusion : MonoBehaviour, IPrefabStageListener {
         public MeshFilter meshFilter;
         public bool generateCollider;
         public BezierSpline bezierSpline;
@@ -146,6 +147,19 @@ namespace SplineEditor.Runtime {
 
                 meshCollider.sharedMesh = mesh;
             }
+        }
+
+        public void OnPrefabOpened()
+        {
+            UpdateMesh();
+        }
+
+        public void OnPrefabClosing()
+        {
+            DestroyImmediate(meshFilter.sharedMesh);
+            meshFilter.sharedMesh = null;
+            if (!meshCollider)
+                meshCollider.sharedMesh = null;
         }
     }
 }
