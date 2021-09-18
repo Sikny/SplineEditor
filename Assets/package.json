@@ -1,10 +1,12 @@
 {
     "name": "com.sikny.splineeditor",
-    "version": "0.4.6",
+    "version": "0.4.8",
     "displayName": "Spline Editor",
     "description": "Spline editor using cubic bezier curves",
     "unity": "2019.4",
-    "dependencies": {},
+    "dependencies": {
+      "com.sikny.unityextendededitor": "0.1.2"
+    },
     "author": {
       "name": "Quentin Pamart",
       "email": "pamartqu@gmail.com"
