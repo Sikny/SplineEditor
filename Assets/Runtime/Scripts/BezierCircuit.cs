@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -9,14 +12,21 @@ namespace SplineEditor.Runtime
     {
         [SerializeField] private List<BezierPath> circuitParts;
 
-        [ContextMenu("Init")]
-        private void Init()
+        public void Init()
         {
+            Clear();
             var instantiatedParts = new List<BezierPath>();
             int partsCount = circuitParts.Count;
-            for (int i = 0; i < partsCount; ++i)
-            {
-                var bezierPath = Instantiate(circuitParts[i], transform);
+            for (int i = 0; i < partsCount; ++i) {
+                BezierPath bezierPath;
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+#endif
+                    bezierPath = Instantiate(circuitParts[i], transform);
+#if UNITY_EDITOR
+                else
+                    bezierPath = PrefabUtility.InstantiatePrefab(circuitParts[i], transform) as BezierPath;
+#endif
                 instantiatedParts.Add(bezierPath);
                 if (i > 0)
                 {
@@ -30,7 +40,7 @@ namespace SplineEditor.Runtime
         }
 
         [ContextMenu("Clear")]
-        private void Clear()
+        public void Clear()
         {
             var instantiatedParts = GetComponentsInChildren<BezierPath>();
             foreach (var instantiatedPart in instantiatedParts)
