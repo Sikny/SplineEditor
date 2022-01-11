@@ -23,6 +23,7 @@ namespace SplineEditor.Runtime {
             var vertices = new Vector3[arrayLen * 2 * 4 + 8];    // 2 vertices per bezier vertex * (2 faces + 2 sides) + 2 extremities 
             var normals = new Vector3[arrayLen * 2 * 4 + 8];
             var triangles = new int[(arrayLen * 6 - 6) * 4 + 2 * 6];    // 2 faces + 2 sides + 2 extremities
+            var uvs = new Vector2[vertices.Length];
 
             int indexUp = 0;
             int indexBottom = arrayLen * 2;
@@ -136,6 +137,12 @@ namespace SplineEditor.Runtime {
             mesh.vertices = vertices;
             mesh.normals = normals;
             mesh.triangles = triangles;
+
+            for (int i = 0; i < uvs.Length; i++)
+            {
+                uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+            }
+            mesh.uv = uvs;
             meshFilter.mesh = mesh;
 
             if (generateCollider)
@@ -159,7 +166,7 @@ namespace SplineEditor.Runtime {
         {
             DestroyImmediate(meshFilter.sharedMesh);
             meshFilter.sharedMesh = null;
-            if (!meshCollider)
+            if (meshCollider != null)
                 meshCollider.sharedMesh = null;
         }
     }
