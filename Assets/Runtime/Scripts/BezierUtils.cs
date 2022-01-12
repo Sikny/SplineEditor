@@ -34,6 +34,15 @@ namespace SplineEditor.Runtime
                 BezierDistance = bezierDistance;
                 GlobalOrigin = GetBezierPos(start, end, t);
                 Tangent = ComputeTangent(start, end, t).normalized;
+                if (Tangent == Vector3.zero) {
+                    if (Vector3.Distance(GlobalOrigin, start.transform.position) <
+                        Vector3.Distance(GlobalOrigin, end.transform.position)) {
+                        Tangent = (start.GlobalTangentEnd - GlobalOrigin).normalized;
+                    }
+                    else {
+                        Tangent = (end.GlobalTangentStart - GlobalOrigin).normalized;
+                    }
+                }
                 Quaternion rotation = Quaternion.Lerp(start.transform.rotation, end.transform.rotation, t);
                 Normal = rotation * Vector3.right;
                 LocalUp = rotation * Vector3.up;
@@ -47,6 +56,7 @@ namespace SplineEditor.Runtime
         public static void GenerateRotationMinimisingFrames(this BezierSpline be)
         {
             List<BezierPos> frames = new List<BezierPos>();
+            be.bezierNodes[0].bezierDistance = 0;
             for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
             {
                 var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
@@ -102,21 +112,16 @@ namespace SplineEditor.Runtime
 
         private static float ComputeBezierDerivative(float t, float a, float b, float c, float d)
         {
-            a = 3 * (b - a);
-            b = 3 * (c - b);
-            c = 3 * (d - c);
-            return a * Mathf.Pow(1 - t, 2) + 2 * b * (1 - t) * t + c * (t * t);
+            return 3 * Mathf.Pow(1 - t, 2) * (b - a) + 6 * (1 - t) * t * (c - b) + 3 * (t * t) * (d - c);
         }
 
         private static Vector3 ComputeTangent(BezierNode startPoint, BezierNode endPoint, float t)
         {
-            Vector3 startPos = startPoint.transform.position, endPos = endPoint.transform.position;
-            float x = ComputeBezierDerivative(t, startPos.x, startPoint.GlobalTangentEnd.x,
-                endPoint.GlobalTangentStart.x, endPos.x);
-            float y = ComputeBezierDerivative(t, startPos.y, startPoint.GlobalTangentEnd.y,
-                endPoint.GlobalTangentStart.y, endPos.y);
-            float z = ComputeBezierDerivative(t, startPos.z, startPoint.GlobalTangentEnd.z,
-                endPoint.GlobalTangentStart.z, endPos.z);
+            Vector3 startPos = startPoint.transform.position, endPos = endPoint.transform.position,
+                startEndTan = startPoint.GlobalTangentEnd, endStartTan = endPoint.GlobalTangentStart;
+            float x = ComputeBezierDerivative(t, startPos.x, startEndTan.x, endStartTan.x, endPos.x);
+            float y = ComputeBezierDerivative(t, startPos.y, startEndTan.y, endStartTan.y, endPos.y);
+            float z = ComputeBezierDerivative(t, startPos.z, startEndTan.z, endStartTan.z, endPos.z);
             return new Vector3(x, y, z).normalized;
         }
 
@@ -126,7 +131,7 @@ namespace SplineEditor.Runtime
             var nodesCount = be.bezierNodes.Count;
             BezierNode startNode = null;
             BezierNode endNode = null;
-            float t = 0;
+            float t;
             for (int i = 0; i < nodesCount; ++i)
             {
                 if (i < nodesCount - 1 && be.bezierNodes[i].bezierDistance > dist 
@@ -134,27 +139,32 @@ namespace SplineEditor.Runtime
                 {
                     if (i == 0)
                     {
-                        startNode = endNode = be.bezierNodes[0];
+                        startNode = be.bezierNodes[0];
+                        endNode = be.bezierNodes[1];
                         t = 0;
-                        break;
+                        return new BezierPos(startNode, endNode, t, dist);
                     }
                     endNode = be.bezierNodes[i];
                     startNode = be.bezierNodes[i - 1];
-                    if(i == nodesCount - 1)
-                        t = (dist - startNode.bezierDistance) / (be.bezierLength - startNode.bezierDistance);
-                    else
-                        t = (dist - startNode.bezierDistance) / (endNode.bezierDistance - startNode.bezierDistance);
                     break;
                 }
             }
             if (startNode == null)  // reached end of bezier spline
             {
-                startNode = be.bezierNodes[nodesCount - 1];
+                startNode = be.bezierNodes[nodesCount - 2];
                 endNode = be.bezierNodes[nodesCount - 1];
                 t = 1;
+                return new BezierPos(startNode, endNode, t, dist);
             }
 
-            return new BezierPos(startNode, endNode, t, distance);
+            var frames = GenerateRotationMinimisingFrames(startNode, endNode, 50);
+            for (int i = frames.Count - 1; i >= 0; --i) {
+                if (frames[i].BezierDistance < dist) {
+                    return frames[i];
+                }
+            }
+            if (dist <= frames[0].BezierDistance) return frames[0];
+            return frames[frames.Count - 1];
         }
 
         public static BezierPos GetClosestBezierPos(this BezierSpline be, Vector3 pos)
