@@ -11,6 +11,10 @@ namespace SplineEditor.Runtime
 
         public List<BezierNode> bezierNodes;
 
+        public bool useResolution;
+        [Tooltip("Distance between two points")]
+        public float resolution = 0.1f;
+        
         public int divisionsBetweenTwoPoints = 10;
 
         private List<BezierUtils.BezierPos> _rotationMinimisingFrames;
@@ -36,8 +40,8 @@ namespace SplineEditor.Runtime
             this.GenerateRotationMinimisingFrames();
         }
 
-        private void OnValidate()
-        {
+        private void OnValidate() {
+            if (resolution < 0.001f) resolution = 0.001f;
             UpdateNodes();
         }
 

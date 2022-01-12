@@ -33,7 +33,7 @@ namespace SplineEditor.Runtime
                 T = t;
                 BezierDistance = bezierDistance;
                 GlobalOrigin = GetBezierPos(start, end, t);
-                Tangent = Tangent(start, end, t).normalized;
+                Tangent = ComputeTangent(start, end, t).normalized;
                 Quaternion rotation = Quaternion.Lerp(start.transform.rotation, end.transform.rotation, t);
                 Normal = rotation * Vector3.right;
                 LocalUp = rotation * Vector3.up;
@@ -58,8 +58,7 @@ namespace SplineEditor.Runtime
             }
 
             be.RotationMinimisingFrames = frames;
-            be.bezierLength = be.bezierNodes[0].bezierDistance;
-            be.bezierNodes[0].bezierDistance = 0;
+            be.bezierLength = be.bezierNodes[be.bezierNodes.Count - 1].bezierDistance - be.bezierNodes[0].bezierDistance;
         }
 
         private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint,
@@ -109,7 +108,7 @@ namespace SplineEditor.Runtime
             return a * Mathf.Pow(1 - t, 2) + 2 * b * (1 - t) * t + c * (t * t);
         }
 
-        private static Vector3 Tangent(BezierNode startPoint, BezierNode endPoint, float t)
+        private static Vector3 ComputeTangent(BezierNode startPoint, BezierNode endPoint, float t)
         {
             Vector3 startPos = startPoint.transform.position, endPos = endPoint.transform.position;
             float x = ComputeBezierDerivative(t, startPos.x, startPoint.GlobalTangentEnd.x,
@@ -158,7 +157,7 @@ namespace SplineEditor.Runtime
             return new BezierPos(startNode, endNode, t, distance);
         }
 
-        public static BezierPos GetClosestBezierPos(this BezierSpline be, Vector3 pos, float prioritySideFactor = 1)
+        public static BezierPos GetClosestBezierPos(this BezierSpline be, Vector3 pos)
         {
             Vector3 localPos = be.transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
             float dist = float.PositiveInfinity;
@@ -176,7 +175,7 @@ namespace SplineEditor.Runtime
             {
                 diff = localPos - frames[j].LocalOrigin;
                 if (Vector3.Angle(diff, frames[j].Normal) < 90) newDist = diff.sqrMagnitude;
-                else newDist = diff.sqrMagnitude * prioritySideFactor;
+                else newDist = diff.sqrMagnitude;
                 if (newDist < dist)
                 {
                     dist = newDist;

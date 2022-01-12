@@ -19,8 +19,10 @@ namespace SplineEditor.Editor {
         public override void OnInspectorGUI() {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("settings"), GUIContent.none);
-            _showSettings = EditorGUILayout.Foldout(_showSettings, "Settings");
+            var bSpline = target as BezierSpline;
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("settings"));
+            _showSettings = EditorGUILayout.Foldout(_showSettings, "Show Settings");
             if (_showSettings) {
                 if (_isEditorNull) {
                     CreateCachedEditor(serializedObject.FindProperty("settings").objectReferenceValue, null,
@@ -30,9 +32,24 @@ namespace SplineEditor.Editor {
 
                 _editor.OnInspectorGUI();
             }
+            EditorGUILayout.Space(10);
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("loop"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("bezierNodes"));
+            
+            EditorGUILayout.Space(10);
+            
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("useResolution"));
+            //bSpline.useResolution = EditorGUILayout.Toggle("Use Resolution", bSpline.useResolution);
+            EditorGUILayout.PropertyField(bSpline.useResolution
+                ? serializedObject.FindProperty("resolution")
+                : serializedObject.FindProperty("divisionsBetweenTwoPoints"));
+
+            EditorGUILayout.Space(10);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("bezierLength"));
             
             serializedObject.ApplyModifiedProperties();
-            DrawDefaultInspector();
+            //DrawDefaultInspector();
         }
     }
 }
