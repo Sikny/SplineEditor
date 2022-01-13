@@ -57,14 +57,18 @@ namespace SplineEditor.Runtime
         {
             List<BezierPos> frames = new List<BezierPos>();
             be.bezierNodes[0].bezierDistance = 0;
-            for (int i = 0; i < be.bezierNodes.Count - 1; ++i)
-            {
-                var vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
-                    be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
-                foreach (var vFrame in vFrames)
-                {
-                    frames.Add(vFrame);
+            for (int i = 0; i < be.bezierNodes.Count - 1; ++i) {
+                List<BezierPos> vFrames;
+                if (be.constantSizeForDivisions) {
+                    vFrames = GenerateFixedDistanceFrames(be.bezierNodes[i], be.bezierNodes[i + 1],
+                        be.divisionsBetweenTwoPoints);
                 }
+                else {
+                    vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
+                        be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
+                }
+
+                frames.AddRange(vFrames);
             }
 
             be.RotationMinimisingFrames = frames;
@@ -93,9 +97,41 @@ namespace SplineEditor.Runtime
                 frames.Add(x);
             }
 
+            x = new BezierPos(startPoint, endPoint, 1, endPoint.bezierDistance);
+            frames.Add(x);
+
             endPoint.bezierDistance = distance;
 
             return frames;
+        }
+
+        private static List<BezierPos> GenerateFixedDistanceFrames(BezierNode startPoint, BezierNode endPoint, int divisions) {
+            var frames = GenerateRotationMinimisingFrames(startPoint, endPoint, Mathf.Max(divisions * 5, 250));
+            int framesCount = frames.Count;
+            var result = new List<BezierPos>();
+            float step = (endPoint.bezierDistance - startPoint.bezierDistance) / divisions;
+            for (float d = startPoint.bezierDistance; d < endPoint.bezierDistance; d += step) {
+                // find closest
+                float distToFrame = float.MaxValue;
+                int index = 0;
+                for (int i = 0; i < framesCount; ++i) {
+                    float curDist = Mathf.Abs(d - frames[i].BezierDistance);
+                    if (curDist < distToFrame) {
+                        index = i;
+                        distToFrame = curDist;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                result.Add(frames[index]);
+            }
+
+            if (Mathf.Abs(result[result.Count - 1].BezierDistance - frames[framesCount - 1].BezierDistance) < 3 * step / 4) {
+                result.RemoveAt(result.Count - 1);
+            }
+            result.Add(frames[framesCount-1]);
+            return result;
         }
 
         private static Vector3 ComputeBezier(float t, Vector3 a, Vector3 b, Vector3 c, Vector3 d)

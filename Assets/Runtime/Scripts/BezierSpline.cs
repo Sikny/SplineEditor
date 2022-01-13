@@ -11,9 +11,7 @@ namespace SplineEditor.Runtime
 
         public List<BezierNode> bezierNodes;
 
-        public bool useResolution;
-        [Tooltip("Distance between two points")]
-        public float resolution = 0.1f;
+        public bool constantSizeForDivisions;
         
         public int divisionsBetweenTwoPoints = 10;
 
@@ -41,7 +39,6 @@ namespace SplineEditor.Runtime
         }
 
         private void OnValidate() {
-            if (resolution < 0.001f) resolution = 0.001f;
             UpdateNodes();
         }
 

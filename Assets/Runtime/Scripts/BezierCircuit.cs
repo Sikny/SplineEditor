@@ -42,7 +42,7 @@ namespace SplineEditor.Runtime
         [ContextMenu("Clear")]
         public void Clear()
         {
-            var instantiatedParts = GetComponentsInChildren<BezierPath>();
+            var instantiatedParts = GetComponentsInChildren<BezierPath>(true);
             foreach (var instantiatedPart in instantiatedParts)
             {
                 if (instantiatedPart == null) return;
