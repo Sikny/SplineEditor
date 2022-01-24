@@ -44,8 +44,8 @@ namespace SplineEditor.Runtime {
                 var normal = vectorFrames[i].Normal;
                 var rotAxis = vectorFrames[i].LocalUp;
                 var bezierDist = vectorFrames[i].BezierDistance;
-                var uv1 = new Vector2(bezierDist, 0);
-                var uv2 = new Vector2(bezierDist, roadWidth * 2);
+                var uv1 = new Vector2(0, bezierDist);
+                var uv2 = new Vector2(roadWidth * 2, bezierDist);
 
                 // up face
                 vertices[indexUp] = bezierCenter + normal * roadWidth;
@@ -154,10 +154,6 @@ namespace SplineEditor.Runtime {
             mesh.normals = normals;
             mesh.triangles = triangles;
 
-            for (int i = 0; i < uvs.Length; i++)
-            {
-                //uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
-            }
             mesh.uv = uvs;
             meshFilter.mesh = mesh;
 
