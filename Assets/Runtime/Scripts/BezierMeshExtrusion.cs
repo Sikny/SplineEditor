@@ -45,7 +45,7 @@ namespace SplineEditor.Runtime {
                 var rotAxis = vectorFrames[i].LocalUp;
                 var bezierDist = vectorFrames[i].BezierDistance;
                 var uv1 = new Vector2(0, bezierDist);
-                var uv2 = new Vector2(roadWidth * 2, bezierDist);
+                var uv2 = new Vector2(1, bezierDist);
 
                 // up face
                 vertices[indexUp] = bezierCenter + normal * roadWidth;

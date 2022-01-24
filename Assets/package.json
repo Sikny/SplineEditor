@@ -1,6 +1,6 @@
 {
   "name": "com.sikny.splineeditor",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "displayName": "Spline Editor",
   "description": "Spline editor using cubic bezier curves",
   "unity": "2019.4",
