@@ -10,7 +10,12 @@ namespace SplineEditor.Runtime {
         public BezierSpline bezierSpline;
         public float roadWidth = 1;
         public float roadThickness = 1;
-        
+
+        [Header("tiling"), SerializeField] private Vector2 upTiling = new Vector2(1, 1);
+        [SerializeField] private Vector2 leftTiling = new Vector2(1, 1);
+        [SerializeField] private Vector2 rightTiling = new Vector2(1, 1);
+        [SerializeField] private Vector2 bottomTiling = new Vector2(1, 1);
+
         [SerializeField, HideInInspector] private MeshCollider meshCollider;
 
         [ContextMenu("Update Mesh")]
@@ -38,26 +43,37 @@ namespace SplineEditor.Runtime {
                 var bezierCenter = vectorFrames[i].GlobalOrigin - transform.position;
                 var normal = vectorFrames[i].Normal;
                 var rotAxis = vectorFrames[i].LocalUp;
-                
+                var bezierDist = vectorFrames[i].BezierDistance;
+                var uv1 = new Vector2(bezierDist, 0);
+                var uv2 = new Vector2(bezierDist, roadWidth * 2);
+
                 // up face
                 vertices[indexUp] = bezierCenter + normal * roadWidth;
                 vertices[indexUp + 1] = bezierCenter - normal * roadWidth;
                 normals[indexUp] = normals[indexUp + 1] = rotAxis;
+                uvs[indexUp] = uv1 * upTiling;
+                uvs[indexUp+1] = uv2 * upTiling;
                 
                 // bottom face
                 vertices[indexBottom] = vertices[indexUp] - rotAxis * roadThickness;
                 vertices[indexBottom + 1] = vertices[indexUp + 1] - rotAxis * roadThickness;
                 normals[indexBottom] = normals[indexBottom + 1] = -rotAxis;
+                uvs[indexBottom] = uv1 * bottomTiling;
+                uvs[indexBottom+1] = uv2 * bottomTiling;
                 
                 // left side
                 vertices[indexLeftSide] = vertices[indexUp + 1];
                 vertices[indexLeftSide + 1] = vertices[indexBottom + 1];
                 normals[indexLeftSide] = normals[indexLeftSide + 1] = -normal;
+                uvs[indexLeftSide] = uv1 * leftTiling;
+                uvs[indexLeftSide+1] = uv2 * leftTiling;
                 
                 // right side
                 vertices[indexRightSide] = vertices[indexUp];
                 vertices[indexRightSide + 1] = vertices[indexBottom];
                 normals[indexRightSide] = normals[indexRightSide + 1] = normal;
+                uvs[indexRightSide] = uv1 * rightTiling;
+                uvs[indexRightSide+1] = uv2 * rightTiling;
 
                 if (indexUp > 1) {
                     // up face
@@ -140,7 +156,7 @@ namespace SplineEditor.Runtime {
 
             for (int i = 0; i < uvs.Length; i++)
             {
-                uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
+                //uvs[i] = new Vector2(vertices[i].x, vertices[i].z);
             }
             mesh.uv = uvs;
             meshFilter.mesh = mesh;
