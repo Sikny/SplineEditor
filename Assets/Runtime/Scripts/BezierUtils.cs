@@ -44,8 +44,8 @@ namespace SplineEditor.Runtime
                     }
                 }
                 Quaternion rotation = Quaternion.Lerp(start.transform.rotation, end.transform.rotation, t);
-                Normal = rotation * Vector3.right;
                 LocalUp = rotation * Vector3.up;
+                Normal = Vector3.Cross(LocalUp, Tangent);
             }
 
             public BezierPos(BezierPos source) : this(source.Start, source.End, source.T, source.BezierDistance) {
