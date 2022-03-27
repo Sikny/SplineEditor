@@ -73,7 +73,8 @@ namespace SplineEditor.Runtime
             }
 
             be.RotationMinimisingFrames = frames;
-            be.bezierLength = be.bezierNodes[be.bezierNodes.Count - 1].bezierDistance - be.bezierNodes[0].bezierDistance;
+            be.bezierLength = be.bezierNodes[be.bezierNodes.Count - 1].bezierDistance;
+            be.bezierNodes[0].bezierDistance = 0;
         }
 
         private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint,
