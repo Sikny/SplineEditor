@@ -61,7 +61,7 @@ namespace SplineEditor.Runtime {
                 }
                 else {
                     vFrames = GenerateRotationMinimisingFrames(be.bezierNodes[i],
-                        be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints);
+                        be.bezierNodes[i + 1], be.divisionsBetweenTwoPoints, true);
                 }
 
                 frames.AddRange(vFrames);
@@ -73,7 +73,7 @@ namespace SplineEditor.Runtime {
         }
 
         private static List<BezierPos> GenerateRotationMinimisingFrames(BezierNode startPoint, BezierNode endPoint,
-            int divisions) {
+            int divisions, bool generateDistances) {
             int steps = divisions;
             var frames = new List<BezierPos>();
             float step = 1.0f / steps;
@@ -95,14 +95,15 @@ namespace SplineEditor.Runtime {
             x = new BezierPos(startPoint, endPoint, 1, endPoint.bezierDistance);
             frames.Add(x);
 
-            endPoint.bezierDistance = distance;
+            if(generateDistances)
+                endPoint.bezierDistance = distance;
 
             return frames;
         }
 
         private static List<BezierPos> GenerateFixedDistanceFrames(BezierNode startPoint, BezierNode endPoint,
             int divisions) {
-            var frames = GenerateRotationMinimisingFrames(startPoint, endPoint, Mathf.Max(divisions * 5, 250));
+            var frames = GenerateRotationMinimisingFrames(startPoint, endPoint, Mathf.Max(divisions * 5, 250), true);
             int framesCount = frames.Count;
             var result = new List<BezierPos>();
             float step = (endPoint.bezierDistance - startPoint.bezierDistance) / divisions;
@@ -186,7 +187,7 @@ namespace SplineEditor.Runtime {
                 return new BezierPos(startNode, endNode, t, dist);
             }
 
-            var frames = GenerateRotationMinimisingFrames(startNode, endNode, 50);
+            var frames = GenerateRotationMinimisingFrames(startNode, endNode, 50, false);
             for (int i = frames.Count - 1; i >= 0; --i) {
                 if (frames[i].BezierDistance < dist && !(be.loop && i == frames.Count - 1)) {
                     return frames[i];
