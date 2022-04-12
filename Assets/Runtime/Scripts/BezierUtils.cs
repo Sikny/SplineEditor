@@ -205,26 +205,25 @@ namespace SplineEditor.Runtime {
             BezierPos bP = null;
             Vector3 diff;
 
-            BezierPos lineStart = null;
-            BezierPos lineEnd = null;
+            /*BezierPos lineStart = null;
+            BezierPos lineEnd = null;*/
 
             var frames = be.RotationMinimisingFrames;
             var framesCount = frames.Count;
 
             for (int j = 0; j < framesCount; ++j) {
                 diff = localPos - frames[j].LocalOrigin;
-                if (Vector3.Angle(diff, frames[j].Normal) < 90) newDist = diff.sqrMagnitude;
-                else newDist = diff.sqrMagnitude;
+                newDist = diff.sqrMagnitude;
                 if (newDist < dist) {
                     dist = newDist;
                     bP = frames[j];
-                    lineStart = frames[j];
-                    lineEnd = j < frames.Count - 1 ? frames[j + 1] : lineStart;
+                    //lineStart = frames[j];
+                    //lineEnd = j < frames.Count - 1 ? frames[j + 1] : lineStart;
                 }
             }
 
-            Vector3 a = lineStart.GlobalOrigin;
-            Vector3 b = lineEnd.GlobalOrigin;
+            /*Vector3 a = lineStart.GlobalOrigin;
+            Vector3 b = lineEnd.GlobalOrigin;*/
             BezierPos result = new BezierPos(bP);
             /*Vector3 projected = a + Vector3.Project(pos - a, b - a);
             
