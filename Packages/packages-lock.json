@@ -1,11 +1,20 @@
 {
   "dependencies": {
     "com.sikny.unityextendededitor": {
-      "version": "0.1.2",
+      "version": "0.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "http://176.31.163.161:4873"
+    },
+    "com.unity.burst": {
+      "version": "1.6.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
       "version": "1.15.12",
@@ -44,6 +53,13 @@
     "com.unity.ide.vscode": {
       "version": "1.2.4",
       "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.mathematics": {
+      "version": "1.2.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

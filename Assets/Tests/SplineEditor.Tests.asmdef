@@ -1,0 +1,17 @@
+{
+    "name": "SplineEditor.Tests",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cf791a1138320544d9f6c03384ab2d2e",
+        "GUID:0309ce77c6b3b6343bcfafa5e4ce401c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
