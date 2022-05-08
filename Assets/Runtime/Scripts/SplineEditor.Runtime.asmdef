@@ -2,7 +2,8 @@
     "name": "SplineEditor.Runtime",
     "rootNamespace": "",
     "references": [
-        "GUID:cf0920147b9043a4eb251eaefd2835ef"
+        "GUID:cf0920147b9043a4eb251eaefd2835ef",
+        "GUID:2665a8d13d1b3f18800f46e256720795"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
