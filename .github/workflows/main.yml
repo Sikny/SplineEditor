@@ -1,0 +1,31 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+    # Triggers the workflow on push or pull request events but only for the "master" branch
+    push:
+        branches: [ "master" ]
+
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Clean package
+              run: |
+                cd Assets
+                mv Samples Samples~
+                rm Samples.meta
+            - name: NPM Publish
+              uses: JS-DevTools/npm-publish@v1
+              with:
+                token: ${{ secrets.NPM_TOKEN }}
+                registry: http://sikny.ovh:4873
+                package: Assets/package.json
+                access: public
