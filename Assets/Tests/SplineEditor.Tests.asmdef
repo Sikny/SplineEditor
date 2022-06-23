@@ -1,9 +1,9 @@
 {
-    "name": "SplineEditor.Runtime",
+    "name": "SplineEditor.Tests",
     "rootNamespace": "",
     "references": [
-        "GUID:cf0920147b9043a4eb251eaefd2835ef",
-        "GUID:2665a8d13d1b3f18800f46e256720795"
+        "GUID:cf791a1138320544d9f6c03384ab2d2e",
+        "GUID:0309ce77c6b3b6343bcfafa5e4ce401c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
