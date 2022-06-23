@@ -10,7 +10,8 @@ namespace SplineEditor.Runtime {
         [Unity.Collections.ReadOnly] public NativeArray<NativeBezierPos> frames;
         [Unity.Collections.ReadOnly] public Matrix4x4 bezierMatrix;
         [Unity.Collections.ReadOnly] public Vector3 inPos;
-        [WriteOnly] public NativeBezierPos output;
+        
+        public NativeArray<NativeBezierPos> output;
         
         public void Execute() {
             Vector3 localPos = bezierMatrix.MultiplyPoint3x4(inPos);
@@ -27,7 +28,7 @@ namespace SplineEditor.Runtime {
                     bP = frames[i];
                 }
             }
-            output = bP;
+            output[0] = bP;
         }
     }
 }

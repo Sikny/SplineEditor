@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.sikny.unityextendededitor": "0.2.1",
+    "com.sikny.unityextendededitor": "0.2.3",
     "com.unity.burst": "1.6.5",
     "com.unity.collab-proxy": "1.15.12",
     "com.unity.ide.rider": "3.0.7",
