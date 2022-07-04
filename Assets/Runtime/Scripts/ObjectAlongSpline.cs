@@ -11,6 +11,7 @@ namespace SplineEditor.Runtime
         public float horizontalOffset;
         public float verticalOffset;
         public bool computeDistanceFromPosition;
+        public bool doLerp;
 
         [ContextMenu("Validate")]
         private void OnValidate()
@@ -21,7 +22,7 @@ namespace SplineEditor.Runtime
                 bezierPos = ComputeBezierPosFromPosition();
                 distance = bezierPos.BezierDistance;
             }
-            else bezierPos = spline.GetBezierPos(distance);
+            else bezierPos = spline.GetBezierPos(distance, doLerp);
             Transform t = transform;
             t.position = bezierPos.GlobalOrigin + bezierPos.Normal * horizontalOffset + bezierPos.LocalUp * verticalOffset;
             t.rotation = bezierPos.Rotation;

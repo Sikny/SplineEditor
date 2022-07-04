@@ -159,7 +159,7 @@ namespace SplineEditor.Runtime {
             return new Vector3(x, y, z).normalized;
         }
 
-        public static BezierPos GetBezierPos(this BezierSpline be, float distance) {
+        public static BezierPos GetBezierPos(this BezierSpline be, float distance, bool doLerp = false) {
             var dist = distance < 0 ? 0 : distance;
             if (be.loop) {
                 var laps = (int)(distance / be.bezierLength);
@@ -190,6 +190,12 @@ namespace SplineEditor.Runtime {
             var frames = GenerateRotationMinimisingFrames(startNode, endNode, 50, false);
             for (int i = frames.Count - 1; i >= 0; --i) {
                 if (frames[i].BezierDistance < dist && !(be.loop && i == frames.Count - 1)) {
+                    if (doLerp) {
+                        var proportion = Mathf.InverseLerp(frames[i].BezierDistance, frames[i+1].BezierDistance, dist);
+                        t = Mathf.Lerp(frames[i].T, frames[i + 1].T, proportion);
+                        return new BezierPos(startNode, endNode, t, dist);
+                    }
+
                     return frames[i];
                 }
             }
