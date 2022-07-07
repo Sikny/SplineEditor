@@ -14,7 +14,7 @@ namespace SplineEditor.Runtime
         public bool doLerp;
 
         [ContextMenu("Validate")]
-        private void OnValidate()
+        public void OnValidate()
         {
             if (spline == null) return;
             BezierUtils.BezierPos bezierPos;
